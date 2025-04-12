@@ -1,5 +1,8 @@
 package MAGE.mage;
 
+import MAGE.mage.model.Funcionario;
+import MAGE.mage.model.Maquina;
+
 import java.util.List;
 
 public class Administrador extends Funcionario {

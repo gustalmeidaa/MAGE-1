@@ -1,5 +1,7 @@
 package MAGE.mage;
 
-public class Celular extends Maquina{
+import MAGE.mage.model.Maquina;
+
+public class Celular extends Maquina {
     private String IMEI;
 }

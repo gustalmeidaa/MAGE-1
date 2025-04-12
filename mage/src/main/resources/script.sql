@@ -46,15 +46,15 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`Funcionario` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Maquinas`
+-- Tabela `MAGE`.`Maquina`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Maquinas` (
-  `id_maquinas` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `MAGE`.`Maquina` (
+  `id_maquina` BIGINT NOT NULL,
   `cod_patrimonial` INT NOT NULL,
   `num_serie` INT NOT NULL,
   `valor` DOUBLE NOT NULL,
   `id_responsavel` INT NOT NULL,
-  PRIMARY KEY (`id_maquinas`),
+  PRIMARY KEY (`id_maquina`),
   INDEX `id_responsavel_idx` (`id_responsavel` ASC) VISIBLE,
   CONSTRAINT `id_responsavel`
     FOREIGN KEY (`id_responsavel`)
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`Historico_de_Manutencoes` (
   INDEX `id_funcionario_idx` (`id_funcionario` ASC) VISIBLE,
   CONSTRAINT `id_maquina`
     FOREIGN KEY (`id_maquina`)
-    REFERENCES `MAGE`.`Maquinas` (`id_maquinas`)
+    REFERENCES `MAGE`.`Maquina` (`id_maquina`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `id_funcionario`
@@ -134,8 +134,8 @@ AFTER UPDATE ON `MAGE`.`Cargo`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('UPDATE', 
-            CONCAT('id_cargo: ', OLD.id_cargo, ', nome_cargo: ', OLD.nome_cargo, ', salario: ', OLD.salario, ', setor: ', OLD.setor, ', is_administrador: ', OLD.is_administrador), 
+    VALUES ('UPDATE',
+            CONCAT('id_cargo: ', OLD.id_cargo, ', nome_cargo: ', OLD.nome_cargo, ', salario: ', OLD.salario, ', setor: ', OLD.setor, ', is_administrador: ', OLD.is_administrador),
             CONCAT('id_cargo: ', NEW.id_cargo, ', nome_cargo: ', NEW.nome_cargo, ', salario: ', NEW.salario, ', setor: ', NEW.setor, ', is_administrador: ', NEW.is_administrador));
 END $$
 
@@ -165,7 +165,7 @@ AFTER UPDATE ON `MAGE`.`Funcionario`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('UPDATE', 
+    VALUES ('UPDATE',
             CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario, ', id_cargo: ', OLD.id_cargo),
             CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario, ', id_cargo: ', NEW.id_cargo));
 END $$
@@ -180,33 +180,33 @@ END $$
 
 DELIMITER ;
 
--- Triggers para a tabela `Maquinas`
+-- Triggers para a tabela `Maquina`
 DELIMITER $$
 
-CREATE TRIGGER log_insert_maquinas
-AFTER INSERT ON `MAGE`.`Maquinas`
+CREATE TRIGGER log_insert_maquina
+AFTER INSERT ON `MAGE`.`Maquina`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('INSERT', '', CONCAT('id_maquinas: ', NEW.id_maquinas, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
+    VALUES ('INSERT', '', CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
 END $$
 
-CREATE TRIGGER log_update_maquinas
-AFTER UPDATE ON `MAGE`.`Maquinas`
+CREATE TRIGGER log_update_maquina
+AFTER UPDATE ON `MAGE`.`Maquina`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('UPDATE', 
-            CONCAT('id_maquinas: ', OLD.id_maquinas, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel),
-            CONCAT('id_maquinas: ', NEW.id_maquinas, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
+    VALUES ('UPDATE',
+            CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel),
+            CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
 END $$
 
-CREATE TRIGGER log_delete_maquinas
-AFTER DELETE ON `MAGE`.`Maquinas`
+CREATE TRIGGER log_delete_maquina
+AFTER DELETE ON `MAGE`.`Maquina`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('DELETE', CONCAT('id_maquinas: ', OLD.id_maquinas, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel), '');
+    VALUES ('DELETE', CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel), '');
 END $$
 
 DELIMITER ;
@@ -227,7 +227,7 @@ AFTER UPDATE ON `MAGE`.`Historico_de_Manutencoes`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('UPDATE', 
+    VALUES ('UPDATE',
             CONCAT('id_historico_de_manutencoes: ', OLD.id_historico_de_manutencoes, ', data: ', OLD.data, ', tipo_de_manutencao: ', OLD.tipo_de_manutencao, ', procedimentos_realizados: ', OLD.procedimentos_realizados, ', id_maquina: ', OLD.id_maquina, ', id_funcionario: ', OLD.id_funcionario),
             CONCAT('id_historico_de_manutencoes: ', NEW.id_historico_de_manutencoes, ', data: ', NEW.data, ', tipo_de_manutencao: ', NEW.tipo_de_manutencao, ', procedimentos_realizados: ', NEW.procedimentos_realizados, ', id_maquina: ', NEW.id_maquina, ', id_funcionario: ', NEW.id_funcionario));
 END $$
@@ -258,7 +258,7 @@ AFTER UPDATE ON `MAGE`.`Registro_de_Movimentacoes`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('UPDATE', 
+    VALUES ('UPDATE',
             CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_responsavel: ', OLD.id_responsavel, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino),
             CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_responsavel: ', NEW.id_responsavel, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
 END $$

@@ -2,7 +2,7 @@ spring:
   application:
     name: MAGE
   datasource:
-      url: jdbc:mysql://localhost:3306/
+      url: jdbc:mysql://localhost:3306/MAGE
       username: root
       password: TG-MAGE
       driver-class-name: com.mysql.cj.jdbc.Driver
