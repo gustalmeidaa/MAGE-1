@@ -18,9 +18,9 @@ CREATE SCHEMA IF NOT EXISTS `MAGE` DEFAULT CHARACTER SET utf8 ;
 USE `MAGE` ;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Cargo`
+-- Tabela `MAGE`.`cargo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Cargo` (
+CREATE TABLE IF NOT EXISTS `MAGE`.`cargo` (
   `id_cargo` INT NOT NULL,
   `nome_cargo` VARCHAR(45) NOT NULL,
   `salario` INT NOT NULL,
@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`Cargo` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Funcionario`
+-- Tabela `MAGE`.`funcionario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Funcionario` (
+CREATE TABLE IF NOT EXISTS `MAGE`.`funcionario` (
   `id_funcionario` INT NOT NULL,
   `nome_funcionario` VARCHAR(45) NOT NULL,
   `id_cargo` INT NOT NULL,
@@ -40,58 +40,59 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`Funcionario` (
   INDEX `id_cargo_idx` (`id_cargo` ASC) VISIBLE,
   CONSTRAINT `id_cargo`
     FOREIGN KEY (`id_cargo`)
-    REFERENCES `MAGE`.`Cargo` (`id_cargo`)
+    REFERENCES `MAGE`.`cargo` (`id_cargo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Maquina`
+-- Tabela `MAGE`.`maquina`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Maquina` (
-  `id_maquina` BIGINT NOT NULL,
-  `cod_patrimonial` INT NOT NULL,
-  `num_serie` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `MAGE`.`maquina` (
+  `id_maquina` BIGINT  AUTO_INCREMENT NOT NULL,
+  `cod_patrimonial` VARCHAR(45) NOT NULL,
+  `num_serie` VARCHAR(45) NOT NULL,
   `valor` DOUBLE NOT NULL,
-  `id_responsavel` INT NOT NULL,
+  `id_responsavel` INT,
+  `localizacao` VARCHAR(45),
   PRIMARY KEY (`id_maquina`),
   INDEX `id_responsavel_idx` (`id_responsavel` ASC) VISIBLE,
   CONSTRAINT `id_responsavel`
     FOREIGN KEY (`id_responsavel`)
-    REFERENCES `MAGE`.`Funcionario` (`id_funcionario`)
+    REFERENCES `MAGE`.`funcionario` (`id_funcionario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Historico_de_Manutencoes`
+-- Tabela `MAGE`.`historico_de_manutencoes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Historico_de_Manutencoes` (
+CREATE TABLE IF NOT EXISTS `MAGE`.`historico_de_manutencoes` (
   `id_historico_de_manutencoes` INT NOT NULL,
   `data` DATETIME NOT NULL,
   `tipo_de_manutencao` VARCHAR(45) NOT NULL,
   `procedimentos_realizados` VARCHAR(45) NOT NULL,
-  `id_maquina` INT NOT NULL,
+  `id_maquina` BIGINT NOT NULL,
   `id_funcionario` INT NOT NULL,
   PRIMARY KEY (`id_historico_de_manutencoes`),
   INDEX `id_maquina_idx` (`id_maquina` ASC) VISIBLE,
   INDEX `id_funcionario_idx` (`id_funcionario` ASC) VISIBLE,
   CONSTRAINT `id_maquina`
     FOREIGN KEY (`id_maquina`)
-    REFERENCES `MAGE`.`Maquina` (`id_maquina`)
+    REFERENCES `MAGE`.`maquina` (`id_maquina`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `id_funcionario`
     FOREIGN KEY (`id_funcionario`)
-    REFERENCES `MAGE`.`Funcionario` (`id_funcionario`)
+    REFERENCES `MAGE`.`funcionario` (`id_funcionario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Registro_de_Movimentacoes`
+-- Tabela `MAGE`.`registro_de_movimentacoes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Registro_de_Movimentacoes` (
+CREATE TABLE IF NOT EXISTS `MAGE`.`registro_de_movimentacoes` (
   `id_registro_de_movimentacoes` INT NOT NULL,
   `id_responsavel` INT NOT NULL,
   `tipo_de_movimentacao` VARCHAR(45) NOT NULL,
@@ -99,17 +100,17 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`Registro_de_Movimentacoes` (
   `destino` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_registro_de_movimentacoes`),
   INDEX `id_responsavel_idx` (`id_responsavel` ASC) VISIBLE,
-  CONSTRAINT `id_responsavel`
+  CONSTRAINT `fk_registro_responsavel`
     FOREIGN KEY (`id_responsavel`)
-    REFERENCES `MAGE`.`Funcionario` (`id_funcionario`)
+    REFERENCES `MAGE`.`funcionario` (`id_funcionario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`Log`
+-- Tabela `MAGE`.`log`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`Log` (
+CREATE TABLE IF NOT EXISTS `MAGE`.`log` (
   `id_log` INT NOT NULL AUTO_INCREMENT,
   `operacao` VARCHAR(45) NOT NULL,
   `dados_antigos` TEXT NOT NULL,
@@ -118,156 +119,156 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`Log` (
   PRIMARY KEY (`id_log`))
 ENGINE = InnoDB;
 
--- Triggers para a tabela `Cargo`
+-- Triggers para a tabela `cargo`
 DELIMITER $$
 
 CREATE TRIGGER log_insert_cargo
-AFTER INSERT ON `MAGE`.`Cargo`
+AFTER INSERT ON `MAGE`.`cargo`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('INSERT', '', CONCAT('id_cargo: ', NEW.id_cargo, ', nome_cargo: ', NEW.nome_cargo, ', salario: ', NEW.salario, ', setor: ', NEW.setor, ', is_administrador: ', NEW.is_administrador));
 END $$
 
 CREATE TRIGGER log_update_cargo
-AFTER UPDATE ON `MAGE`.`Cargo`
+AFTER UPDATE ON `MAGE`.`cargo`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
             CONCAT('id_cargo: ', OLD.id_cargo, ', nome_cargo: ', OLD.nome_cargo, ', salario: ', OLD.salario, ', setor: ', OLD.setor, ', is_administrador: ', OLD.is_administrador),
             CONCAT('id_cargo: ', NEW.id_cargo, ', nome_cargo: ', NEW.nome_cargo, ', salario: ', NEW.salario, ', setor: ', NEW.setor, ', is_administrador: ', NEW.is_administrador));
 END $$
 
 CREATE TRIGGER log_delete_cargo
-AFTER DELETE ON `MAGE`.`Cargo`
+AFTER DELETE ON `MAGE`.`cargo`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('DELETE', CONCAT('id_cargo: ', OLD.id_cargo, ', nome_cargo: ', OLD.nome_cargo, ', salario: ', OLD.salario, ', setor: ', OLD.setor, ', is_administrador: ', OLD.is_administrador), '');
 END $$
 
 DELIMITER ;
 
--- Triggers para a tabela `Funcionario`
+-- Triggers para a tabela `funcionario`
 DELIMITER $$
 
 CREATE TRIGGER log_insert_funcionario
-AFTER INSERT ON `MAGE`.`Funcionario`
+AFTER INSERT ON `MAGE`.`funcionario`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('INSERT', '', CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario, ', id_cargo: ', NEW.id_cargo));
 END $$
 
 CREATE TRIGGER log_update_funcionario
-AFTER UPDATE ON `MAGE`.`Funcionario`
+AFTER UPDATE ON `MAGE`.`funcionario`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
             CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario, ', id_cargo: ', OLD.id_cargo),
             CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario, ', id_cargo: ', NEW.id_cargo));
 END $$
 
 CREATE TRIGGER log_delete_funcionario
-AFTER DELETE ON `MAGE`.`Funcionario`
+AFTER DELETE ON `MAGE`.`funcionario`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('DELETE', CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario, ', id_cargo: ', OLD.id_cargo), '');
 END $$
 
 DELIMITER ;
 
--- Triggers para a tabela `Maquina`
+-- Triggers para a tabela `maquina`
 DELIMITER $$
 
 CREATE TRIGGER log_insert_maquina
-AFTER INSERT ON `MAGE`.`Maquina`
+AFTER INSERT ON `MAGE`.`maquina`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
-    VALUES ('INSERT', '', CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
-END $$
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('INSERT', '', CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', COALESCE(NEW.id_responsavel, 'NULL')));
+END $
 
 CREATE TRIGGER log_update_maquina
-AFTER UPDATE ON `MAGE`.`Maquina`
+AFTER UPDATE ON `MAGE`.`maquina`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
             CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel),
             CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
 END $$
 
 CREATE TRIGGER log_delete_maquina
-AFTER DELETE ON `MAGE`.`Maquina`
+AFTER DELETE ON `MAGE`.`maquina`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('DELETE', CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel), '');
 END $$
 
 DELIMITER ;
 
--- Triggers para a tabela `Historico_de_Manutencoes`
+-- Triggers para a tabela `historico_de_manutencoes`
 DELIMITER $$
 
 CREATE TRIGGER log_insert_historico_manutencao
-AFTER INSERT ON `MAGE`.`Historico_de_Manutencoes`
+AFTER INSERT ON `MAGE`.`historico_de_manutencoes`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('INSERT', '', CONCAT('id_historico_de_manutencoes: ', NEW.id_historico_de_manutencoes, ', data: ', NEW.data, ', tipo_de_manutencao: ', NEW.tipo_de_manutencao, ', procedimentos_realizados: ', NEW.procedimentos_realizados, ', id_maquina: ', NEW.id_maquina, ', id_funcionario: ', NEW.id_funcionario));
 END $$
 
 CREATE TRIGGER log_update_historico_manutencao
-AFTER UPDATE ON `MAGE`.`Historico_de_Manutencoes`
+AFTER UPDATE ON `MAGE`.`historico_de_manutencoes`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
             CONCAT('id_historico_de_manutencoes: ', OLD.id_historico_de_manutencoes, ', data: ', OLD.data, ', tipo_de_manutencao: ', OLD.tipo_de_manutencao, ', procedimentos_realizados: ', OLD.procedimentos_realizados, ', id_maquina: ', OLD.id_maquina, ', id_funcionario: ', OLD.id_funcionario),
             CONCAT('id_historico_de_manutencoes: ', NEW.id_historico_de_manutencoes, ', data: ', NEW.data, ', tipo_de_manutencao: ', NEW.tipo_de_manutencao, ', procedimentos_realizados: ', NEW.procedimentos_realizados, ', id_maquina: ', NEW.id_maquina, ', id_funcionario: ', NEW.id_funcionario));
 END $$
 
 CREATE TRIGGER log_delete_historico_manutencao
-AFTER DELETE ON `MAGE`.`Historico_de_Manutencoes`
+AFTER DELETE ON `MAGE`.`historico_de_manutencoes`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('DELETE', CONCAT('id_historico_de_manutencoes: ', OLD.id_historico_de_manutencoes, ', data: ', OLD.data, ', tipo_de_manutencao: ', OLD.tipo_de_manutencao, ', procedimentos_realizados: ', OLD.procedimentos_realizados, ', id_maquina: ', OLD.id_maquina, ', id_funcionario: ', OLD.id_funcionario), '');
 END $$
 
 DELIMITER ;
 
--- Triggers para a tabela `Registro_de_Movimentacoes`
+-- Triggers para a tabela `registro_de_movimentacoes`
 DELIMITER $$
 
 CREATE TRIGGER log_insert_registro_movimentacoes
-AFTER INSERT ON `MAGE`.`Registro_de_Movimentacoes`
+AFTER INSERT ON `MAGE`.`registro_de_movimentacoes`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('INSERT', '', CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_responsavel: ', NEW.id_responsavel, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
 END $$
 
 CREATE TRIGGER log_update_registro_movimentacoes
-AFTER UPDATE ON `MAGE`.`Registro_de_Movimentacoes`
+AFTER UPDATE ON `MAGE`.`registro_de_movimentacoes`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
             CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_responsavel: ', OLD.id_responsavel, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino),
             CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_responsavel: ', NEW.id_responsavel, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
 END $$
 
 CREATE TRIGGER log_delete_registro_movimentacoes
-AFTER DELETE ON `MAGE`.`Registro_de_Movimentacoes`
+AFTER DELETE ON `MAGE`.`registro_de_movimentacoes`
 FOR EACH ROW
 BEGIN
-    INSERT INTO `MAGE`.`Log` (operacao, dados_antigos, dados_novos)
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('DELETE', CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_responsavel: ', OLD.id_responsavel, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino), '');
 END $$
 
