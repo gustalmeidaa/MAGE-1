@@ -5,28 +5,29 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 @Entity
-@Table(name = "Maquina")
+@Table(name = "maquina")
 public class Maquina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_maquina")
-    private Long idMaquina;
+    private Integer idMaquina;
     @Column(name = "cod_patrimonial", length = 45, nullable = false)
     private String codPatrimonial;
     @Column(name = "num_serie", length = 45, nullable = false)
     private String numSerie;
     @Column(name = "valor", nullable = false) // Podemos adicionar o número de casas decimais se necessário
     private BigDecimal valor;
-    @Column(name = "id_responsavel", nullable = true)
-    private Integer idResponsavel;
+    @ManyToOne
+    @JoinColumn(name = "id_responsavel")
+    private Funcionario responsavel;
     @Column(name = "localizacao", length = 45)
     private String localizacao;
 
-    public Long getIdMaquina() {
+    public Integer getIdMaquina() {
         return idMaquina;
     }
 
-    public void setIdMaquina(Long idMaquina) {
+    public void setIdMaquina(Integer idMaquina) {
         this.idMaquina = idMaquina;
     }
 
@@ -54,12 +55,12 @@ public class Maquina {
         this.valor = valor;
     }
 
-    public Integer getIdResponsavel() {
-        return idResponsavel;
+    public Funcionario getResponsavel() {
+        return responsavel;
     }
 
-    public void setIdResponsavel(Integer idResponsavel) {
-        this.idResponsavel = idResponsavel;
+    public void setResponsavel(Funcionario responsavel) {
+        this.responsavel = responsavel;
     }
 
     public String getLocalizacao() {
@@ -70,6 +71,6 @@ public class Maquina {
         this.localizacao = localizacao;
     }
 
-    public void agendarManutencoes(LocalDate dataManutencao){}
+    public void agendarManutencoes(LocalDate dataManutencao){} // Serão organizados posteriormente
     public void registrarManutencao(){}
 }

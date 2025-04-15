@@ -49,7 +49,7 @@ ENGINE = InnoDB;
 -- Tabela `MAGE`.`maquina`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`maquina` (
-  `id_maquina` BIGINT  AUTO_INCREMENT NOT NULL,
+  `id_maquina` INT  AUTO_INCREMENT NOT NULL,
   `cod_patrimonial` VARCHAR(45) NOT NULL,
   `num_serie` VARCHAR(45) NOT NULL,
   `valor` DOUBLE NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`historico_de_manutencoes` (
   `data` DATETIME NOT NULL,
   `tipo_de_manutencao` VARCHAR(45) NOT NULL,
   `procedimentos_realizados` VARCHAR(45) NOT NULL,
-  `id_maquina` BIGINT NOT NULL,
+  `id_maquina` INT NOT NULL,
   `id_funcionario` INT NOT NULL,
   PRIMARY KEY (`id_historico_de_manutencoes`),
   INDEX `id_maquina_idx` (`id_maquina` ASC) VISIBLE,
@@ -190,7 +190,7 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('INSERT', '', CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', COALESCE(NEW.id_responsavel, 'NULL')));
-END $
+END $$
 
 CREATE TRIGGER log_update_maquina
 AFTER UPDATE ON `MAGE`.`maquina`
