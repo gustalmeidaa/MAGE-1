@@ -193,21 +193,21 @@ BEGIN
 END $$
 
 CREATE TRIGGER log_update_maquina
-AFTER UPDATE ON `MAGE`.`maquina`
+BEFORE UPDATE ON `MAGE`.`maquina`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
             CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel),
-            CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel));
+            CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel, 'NULL'));
 END $$
 
 CREATE TRIGGER log_delete_maquina
-AFTER DELETE ON `MAGE`.`maquina`
+BEFORE DELETE ON `MAGE`.`maquina`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('DELETE', CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel), '');
+    VALUES ('DELETE', CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', IFNULL(OLD.id_responsavel,'NULL')),'');
 END $$
 
 DELIMITER ;

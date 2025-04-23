@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,13 +18,59 @@ import java.util.Optional;
 public class MaquinaController {
 
     @Autowired
-    private MaquinaRepository maquinaRepository;
+    private MaquinaService maquinaService;
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
     @PostMapping
     public ResponseEntity<Maquina> criarMaquina(@RequestBody MaquinaDTO maquinaDTO) {
+        Maquina maquina = new Maquina();
+        maquina.setCodPatrimonial(maquinaDTO.codPatrimonial());
+        maquina.setNumSerie(maquinaDTO.numSerie());
+        maquina.setValor(maquinaDTO.valor());
+        maquina.setLocalizacao(maquinaDTO.localizacao());
+
+        if (maquinaDTO.idResponsavel() != null) {
+            Optional<Funcionario> responsavelOptional = funcionarioRepository.findById(maquinaDTO.idResponsavel());
+            if (responsavelOptional.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            maquina.setResponsavel(responsavelOptional.get());
+        }
+
+        Maquina maquinaSalva = maquinaService.cadastrarMaquina(maquina);
+
+        return ResponseEntity.ok(maquinaSalva);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<Maquina>> listarMaquinas() {
+        List<Maquina> maquinas = maquinaService.listarMaquinas();
+        return ResponseEntity.ok(maquinas);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Maquina> buscarMaquina(@PathVariable Integer id) {
+        Optional<Maquina> maquinaOptional = maquinaService.buscarMaquina(id);
+        if (maquinaOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Maquina maquina = maquinaOptional.get();
+        return ResponseEntity.ok(maquina);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Maquina> atualizarMaquina(@PathVariable Integer id, @RequestBody MaquinaDTO maquinaDTO) {
+        Optional<Maquina> maquinaOptional = maquinaService.buscarMaquina(id);
+        if (maquinaOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Maquina maquina = maquinaOptional.get();
+
         Optional<Funcionario> responsavelOptional = funcionarioRepository.findById(maquinaDTO.idResponsavel());
         if (responsavelOptional.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -31,15 +78,20 @@ public class MaquinaController {
 
         Funcionario responsavel = responsavelOptional.get();
 
-        Maquina maquina = new Maquina();
         maquina.setCodPatrimonial(maquinaDTO.codPatrimonial());
         maquina.setNumSerie(maquinaDTO.numSerie());
         maquina.setValor(maquinaDTO.valor());
         maquina.setResponsavel(responsavel);
         maquina.setLocalizacao(maquinaDTO.localizacao());
 
-        Maquina maquinaSalva = maquinaRepository.save(maquina);
+        Maquina maquinaAtualizada = maquinaService.atualizarMaquina(maquina);
 
-        return ResponseEntity.ok(maquinaSalva);
+        return ResponseEntity.ok(maquinaAtualizada);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirMaquina(@PathVariable Integer id) {
+        maquinaService.excluirMaquina(id);
+        return ResponseEntity.noContent().build();
     }
 }
