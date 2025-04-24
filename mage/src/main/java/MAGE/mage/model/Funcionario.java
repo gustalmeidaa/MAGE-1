@@ -15,10 +15,6 @@ public class Funcionario {
     @Column(name = "nome_funcionario", length = 45, nullable = false)
     private String nomeFuncionario;
 
-    @ManyToOne
-    @JoinColumn(name = "id_cargo", nullable = false)
-    private Cargo cargo;
-
     @OneToMany(mappedBy = "responsavel")
     private List<Maquina> maquinas;
 
@@ -36,13 +32,5 @@ public class Funcionario {
 
     public void setNomeFuncionario(String nomeFuncionario) {
         this.nomeFuncionario = nomeFuncionario;
-    }
-
-    public Cargo getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
     }
 }

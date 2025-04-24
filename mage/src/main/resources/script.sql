@@ -18,32 +18,14 @@ CREATE SCHEMA IF NOT EXISTS `MAGE` DEFAULT CHARACTER SET utf8 ;
 USE `MAGE` ;
 
 -- -----------------------------------------------------
--- Tabela `MAGE`.`cargo`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `MAGE`.`cargo` (
-  `id_cargo` INT NOT NULL,
-  `nome_cargo` VARCHAR(45) NOT NULL,
-  `salario` INT NOT NULL,
-  `setor` VARCHAR(45) NOT NULL,
-  `is_administrador` TINYINT NOT NULL,
-  PRIMARY KEY (`id_cargo`))
-ENGINE = InnoDB;
-
--- -----------------------------------------------------
 -- Tabela `MAGE`.`funcionario`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`funcionario` (
-  `id_funcionario` INT NOT NULL,
+  `id_funcionario` INT NOT NULL AUTO_INCREMENT,
   `nome_funcionario` VARCHAR(45) NOT NULL,
-  `id_cargo` INT NOT NULL,
-  PRIMARY KEY (`id_funcionario`),
-  INDEX `id_cargo_idx` (`id_cargo` ASC) VISIBLE,
-  CONSTRAINT `id_cargo`
-    FOREIGN KEY (`id_cargo`)
-    REFERENCES `MAGE`.`cargo` (`id_cargo`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+  PRIMARY KEY (`id_funcionario`)
+) ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Tabela `MAGE`.`maquina`
@@ -119,37 +101,6 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`log` (
   PRIMARY KEY (`id_log`))
 ENGINE = InnoDB;
 
--- Triggers para a tabela `cargo`
-DELIMITER $$
-
-CREATE TRIGGER log_insert_cargo
-AFTER INSERT ON `MAGE`.`cargo`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('INSERT', '', CONCAT('id_cargo: ', NEW.id_cargo, ', nome_cargo: ', NEW.nome_cargo, ', salario: ', NEW.salario, ', setor: ', NEW.setor, ', is_administrador: ', NEW.is_administrador));
-END $$
-
-CREATE TRIGGER log_update_cargo
-AFTER UPDATE ON `MAGE`.`cargo`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('UPDATE',
-            CONCAT('id_cargo: ', OLD.id_cargo, ', nome_cargo: ', OLD.nome_cargo, ', salario: ', OLD.salario, ', setor: ', OLD.setor, ', is_administrador: ', OLD.is_administrador),
-            CONCAT('id_cargo: ', NEW.id_cargo, ', nome_cargo: ', NEW.nome_cargo, ', salario: ', NEW.salario, ', setor: ', NEW.setor, ', is_administrador: ', NEW.is_administrador));
-END $$
-
-CREATE TRIGGER log_delete_cargo
-AFTER DELETE ON `MAGE`.`cargo`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('DELETE', CONCAT('id_cargo: ', OLD.id_cargo, ', nome_cargo: ', OLD.nome_cargo, ', salario: ', OLD.salario, ', setor: ', OLD.setor, ', is_administrador: ', OLD.is_administrador), '');
-END $$
-
-DELIMITER ;
-
 -- Triggers para a tabela `funcionario`
 DELIMITER $$
 
@@ -158,7 +109,7 @@ AFTER INSERT ON `MAGE`.`funcionario`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('INSERT', '', CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario, ', id_cargo: ', NEW.id_cargo));
+    VALUES ('INSERT', '', CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario));
 END $$
 
 CREATE TRIGGER log_update_funcionario
@@ -167,8 +118,8 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
-            CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario, ', id_cargo: ', OLD.id_cargo),
-            CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario, ', id_cargo: ', NEW.id_cargo));
+            CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario),
+            CONCAT('id_funcionario: ', NEW.id_funcionario, ', nome_funcionario: ', NEW.nome_funcionario));
 END $$
 
 CREATE TRIGGER log_delete_funcionario
@@ -176,7 +127,7 @@ AFTER DELETE ON `MAGE`.`funcionario`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('DELETE', CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario, ', id_cargo: ', OLD.id_cargo), '');
+    VALUES ('DELETE', CONCAT('id_funcionario: ', OLD.id_funcionario, ', nome_funcionario: ', OLD.nome_funcionario), '');
 END $$
 
 DELIMITER ;
