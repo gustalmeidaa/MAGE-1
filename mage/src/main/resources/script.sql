@@ -26,6 +26,15 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`funcionario` (
   PRIMARY KEY (`id_funcionario`)
 ) ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Tabela `MAGE`.`administrador`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MAGE`.`administrador` (
+  `id_adm` INT NOT NULL AUTO_INCREMENT,
+  `login` VARCHAR(45) NOT NULL,
+  `senha` VARCHAR(60) NOT NULL,
+  PRIMARY KEY (`id_adm`)
+) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Tabela `MAGE`.`maquina`
@@ -132,8 +141,39 @@ END $$
 
 DELIMITER ;
 
+-- Trigger para inserção na tabela `administrador`
+CREATE TRIGGER log_insert_administrador
+AFTER INSERT ON `MAGE`.`administrador`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('INSERT', '', CONCAT('id_adm: ', NEW.id_adm, ', login: ', NEW.login));
+END $
+
+-- Trigger para atualização na tabela `administrador`
+CREATE TRIGGER log_update_administrador
+AFTER UPDATE ON `MAGE`.`administrador`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('UPDATE',
+            CONCAT('id_adm: ', OLD.id_adm, ', login: ', OLD.login),
+            CONCAT('id_adm: ', NEW.id_adm, ', login: ', NEW.login));
+END $
+
+-- Trigger para exclusão na tabela `administrador`
+CREATE TRIGGER log_delete_administrador
+AFTER DELETE ON `MAGE`.`administrador`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('DELETE', CONCAT('id_adm: ', OLD.id_adm, ', login: ', OLD.login), '');
+END $
+
+DELIMITER ;
+
 -- Triggers para a tabela `maquina`
-DELIMITER $$
+DELIMITER $
 
 CREATE TRIGGER log_insert_maquina
 AFTER INSERT ON `MAGE`.`maquina`
@@ -141,7 +181,7 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('INSERT', '', CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', COALESCE(NEW.id_responsavel, 'NULL')));
-END $$
+END $
 
 CREATE TRIGGER log_update_maquina
 BEFORE UPDATE ON `MAGE`.`maquina`
@@ -149,17 +189,17 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
-            CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', OLD.id_responsavel),
-            CONCAT('id_maquina: ', NEW.id_maquina, ', cod_patrimonial: ', NEW.cod_patrimonial, ', num_serie: ', NEW.num_serie, ', valor: ', NEW.valor, ', id_responsavel: ', NEW.id_responsavel, 'NULL'));
-END $$
+            CONCAT('id_maquina: ', COALESCE(OLD.id_maquina, 'NULL'), ', cod_patrimonial: ', COALESCE(OLD.cod_patrimonial, 'NULL'), ', num_serie: ', COALESCE(OLD.num_serie, 'NULL'), ', valor: ', COALESCE(OLD.valor, 'NULL'), ', id_responsavel: ', COALESCE(OLD.id_responsavel, 'NULL')),
+            CONCAT('id_maquina: ', COALESCE(NEW.id_maquina, 'NULL'), ', cod_patrimonial: ', COALESCE(NEW.cod_patrimonial, 'NULL'), ', num_serie: ', COALESCE(NEW.num_serie, 'NULL'), ', valor: ', COALESCE(NEW.valor, 'NULL'), ', id_responsavel: ', COALESCE(NEW.id_responsavel, 'NULL')));
+END $
 
 CREATE TRIGGER log_delete_maquina
 BEFORE DELETE ON `MAGE`.`maquina`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('DELETE', CONCAT('id_maquina: ', OLD.id_maquina, ', cod_patrimonial: ', OLD.cod_patrimonial, ', num_serie: ', OLD.num_serie, ', valor: ', OLD.valor, ', id_responsavel: ', IFNULL(OLD.id_responsavel,'NULL')),'');
-END $$
+    VALUES ('DELETE', CONCAT('id_maquina: ', COALESCE(OLD.id_maquina, 'NULL'), ', cod_patrimonial: ', COALESCE(OLD.cod_patrimonial, 'NULL'), ', num_serie: ', COALESCE(OLD.num_serie, 'NULL'), ', valor: ', COALESCE(OLD.valor, 'NULL'), ', id_responsavel: ', COALESCE(OLD.id_responsavel, 'NULL')), '');
+END $
 
 DELIMITER ;
 
