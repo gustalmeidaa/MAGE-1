@@ -3,7 +3,7 @@ package MAGE.mage.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 @Entity
 @Table(name = "maquina")
 public class Maquina {
@@ -70,7 +70,4 @@ public class Maquina {
     public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
     }
-
-    public void agendarManutencoes(LocalDate dataManutencao){} // Serão organizados posteriormente
-    public void registrarManutencao(){}
 }

@@ -59,7 +59,7 @@ ENGINE = InnoDB;
 -- Tabela `MAGE`.`historico_de_manutencoes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`historico_de_manutencoes` (
-  `id_historico_de_manutencoes` INT NOT NULL,
+  `id_historico_de_manutencoes` INT NOT NULL AUTO_INCREMENT,
   `data` DATETIME NOT NULL,
   `tipo_de_manutencao` VARCHAR(45) NOT NULL,
   `procedimentos_realizados` VARCHAR(45) NOT NULL,
@@ -84,7 +84,7 @@ ENGINE = InnoDB;
 -- Tabela `MAGE`.`registro_de_movimentacoes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`registro_de_movimentacoes` (
-  `id_registro_de_movimentacoes` INT NOT NULL,
+  `id_registro_de_movimentacoes` INT NOT NULL AUTO_INCREMENT,
   `id_responsavel` INT NOT NULL,
   `tipo_de_movimentacao` VARCHAR(45) NOT NULL,
   `origem` VARCHAR(45) NOT NULL,
