@@ -81,6 +81,25 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`historico_de_manutencoes` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
+-- Tabela `MAGE`.`manutencoes_agendadas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MAGE`.`manutencoes_agendadas` (
+  `id_manutencao_agendada` INT NOT NULL AUTO_INCREMENT,
+  `data_agendada` DATETIME NOT NULL,
+  `tipo_de_manutencao` VARCHAR(45) NOT NULL,
+  `procedimentos` VARCHAR(255) NOT NULL,
+  `id_maquina` INT,
+  PRIMARY KEY (`id_manutencao_agendada`),
+  INDEX `id_maquina_idx` (`id_maquina` ASC) VISIBLE,
+  CONSTRAINT `fk_manutencao_maquina`
+    FOREIGN KEY (`id_maquina`)
+    REFERENCES `MAGE`.`maquina` (`id_maquina`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Tabela `MAGE`.`registro_de_movimentacoes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`registro_de_movimentacoes` (
