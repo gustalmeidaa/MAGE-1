@@ -37,9 +37,8 @@ public class ManutencaoService {
         manutencao.setData(data);
         manutencao.setTipoManutencao(tipoManutencao);
         manutencao.setProcedimentos(procedimentos);
-        manutencao.setIdMaquina(maquina); // Associar a manutenção à máquina
+        manutencao.setIdMaquina(maquina);
 
-        // Salvar a manutenção no repositório
         manutencaoRepository.save(manutencao);
     }
 }
