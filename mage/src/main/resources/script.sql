@@ -104,15 +104,15 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`registro_de_movimentacoes` (
   `id_registro_de_movimentacoes` INT NOT NULL AUTO_INCREMENT,
-  `id_responsavel` INT NOT NULL,
+  `id_maquina_movimentada` INT NOT NULL,
   `tipo_de_movimentacao` VARCHAR(45) NOT NULL,
   `origem` VARCHAR(45) NOT NULL,
   `destino` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_registro_de_movimentacoes`),
-  INDEX `id_responsavel_idx` (`id_responsavel` ASC) VISIBLE,
-  CONSTRAINT `fk_registro_responsavel`
-    FOREIGN KEY (`id_responsavel`)
-    REFERENCES `MAGE`.`funcionario` (`id_funcionario`)
+  INDEX `id_responsavel_idx` (`id_maquina_movimentada` ASC) VISIBLE,
+  CONSTRAINT `fk_maquina_movimentada`
+    FOREIGN KEY (`id_maquina_movimentada`)
+    REFERENCES `MAGE`.`maquina` (`id_maquina`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -261,7 +261,7 @@ AFTER INSERT ON `MAGE`.`registro_de_movimentacoes`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('INSERT', '', CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_responsavel: ', NEW.id_responsavel, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
+    VALUES ('INSERT', '', CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_maquina_movimentada: ', NEW.id_maquina_movimentada, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
 END $$
 
 CREATE TRIGGER log_update_registro_movimentacoes
@@ -270,8 +270,8 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
     VALUES ('UPDATE',
-            CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_responsavel: ', OLD.id_responsavel, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino),
-            CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_responsavel: ', NEW.id_responsavel, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
+            CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_maquina_movimentada: ', OLD.id_maquina_movimentada, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino),
+            CONCAT('id_registro_de_movimentacoes: ', NEW.id_registro_de_movimentacoes, ', id_maquina_movimentada: ', NEW.id_maquina_movimentada, ', tipo_de_movimentacao: ', NEW.tipo_de_movimentacao, ', origem: ', NEW.origem, ', destino: ', NEW.destino));
 END $$
 
 CREATE TRIGGER log_delete_registro_movimentacoes
@@ -279,7 +279,7 @@ AFTER DELETE ON `MAGE`.`registro_de_movimentacoes`
 FOR EACH ROW
 BEGIN
     INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
-    VALUES ('DELETE', CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_responsavel: ', OLD.id_responsavel, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino), '');
+    VALUES ('DELETE', CONCAT('id_registro_de_movimentacoes: ', OLD.id_registro_de_movimentacoes, ', id_maquina_movimentada: ', OLD.id_maquina_movimentada, ', tipo_de_movimentacao: ', OLD.tipo_de_movimentacao, ', origem: ', OLD.origem, ', destino: ', OLD.destino), '');
 END $$
 
 DELIMITER ;

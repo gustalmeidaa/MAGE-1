@@ -1,12 +1,16 @@
 package MAGE.mage.controller;
 
+import MAGE.mage.dto.ManutencaoAgendadaDTO;
 import MAGE.mage.model.ManutencaoAgendada;
+import MAGE.mage.model.Maquina;
+import MAGE.mage.repository.MaquinaRepository;
 import MAGE.mage.service.ManutencaoAgendadaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/manutencoes-agendadas")
@@ -14,6 +18,8 @@ public class ManutencaoAgendadaController {
 
     @Autowired
     private ManutencaoAgendadaService service;
+    @Autowired
+    private MaquinaRepository maquinaRepository;
 
     @GetMapping
     public List<ManutencaoAgendada> getAll() {
@@ -28,9 +34,20 @@ public class ManutencaoAgendadaController {
     }
 
     @PostMapping
-    public ManutencaoAgendada create(@RequestBody ManutencaoAgendada manutencaoAgendada) {
-
-        return service.save(manutencaoAgendada);
+    public ResponseEntity<ManutencaoAgendada> create(@RequestBody ManutencaoAgendadaDTO manutencaoAgendadaDTO) {
+        ManutencaoAgendada manutencaoAgendada = new ManutencaoAgendada();
+        manutencaoAgendada.setDataAgendada(manutencaoAgendadaDTO.dataAgendada());
+        manutencaoAgendada.setTipoManutencao(manutencaoAgendadaDTO.tipoManutencao());
+        manutencaoAgendada.setProcedimentos(manutencaoAgendadaDTO.procedimentos());
+        if (manutencaoAgendadaDTO.idMaquina() != null){
+            Optional<Maquina> maquinaOptional = maquinaRepository.findById(manutencaoAgendadaDTO.idMaquina());
+            if(maquinaOptional.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+            manutencaoAgendada.setMaquina(maquinaOptional.get());
+        }
+        ManutencaoAgendada manutencaoSalva = service.save(manutencaoAgendada);
+        return ResponseEntity.ok(manutencaoSalva);
     }
 
     @PutMapping("/{id}")

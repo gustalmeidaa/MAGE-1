@@ -9,16 +9,20 @@ public class Movimentacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_registro_de_movimentacoes")
     private Integer idMovimentacoes;
-    @Column(name = "id_responsavel")
-    private Integer idFuncionario;
+
+    @ManyToOne
+    @JoinColumn(name = "id_maquina_movimentada")
+    private Maquina maquinaMovimentada;
 
     @Column(name = "tipo_de_movimentacao", length = 45)
     private String tipo;
 
     @Column(name = "origem", length = 45)
     private String origem;
-    @Column(name = "Destino", length = 45)
+    @Column(name = "destino", length = 45)
     private String destino;
+
+    // getters e setters
 
     public Integer getIdMovimentacoes() {
         return idMovimentacoes;
@@ -28,12 +32,12 @@ public class Movimentacao {
         this.idMovimentacoes = idMovimentacoes;
     }
 
-    public Integer getIdFuncionario() {
-        return idFuncionario;
+    public Maquina getMaquinaMovimentada() {
+        return maquinaMovimentada;
     }
 
-    public void setIdFuncionario(Integer idFuncionario) {
-        this.idFuncionario = idFuncionario;
+    public void setMaquinaMovimentada(Maquina maquinaMovimentada) {
+        this.maquinaMovimentada = maquinaMovimentada;
     }
 
     public String getTipo() {
