@@ -7,6 +7,7 @@ public record MaquinaDTO(
         String numSerie,
         BigDecimal valor,
         Integer idResponsavel,
-        String localizacao
+        String localizacao,
+        String status
 ) {
 }
