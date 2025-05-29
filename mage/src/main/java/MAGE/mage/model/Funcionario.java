@@ -15,8 +15,14 @@ public class Funcionario {
     @Column(name = "nome_funcionario", length = 45, nullable = false)
     private String nomeFuncionario;
 
-    @OneToMany(mappedBy = "responsavel")
+    @ManyToOne
+    @JoinColumn(name = "id_setor")
+    private Setor setor;
+
+    @OneToMany(mappedBy = "idResponsavel")
     private List<Maquina> maquinas;
+
+    // Getters e Setters
 
     public Integer getIdFuncionario() {
         return idFuncionario;
@@ -32,5 +38,21 @@ public class Funcionario {
 
     public void setNomeFuncionario(String nomeFuncionario) {
         this.nomeFuncionario = nomeFuncionario;
+    }
+
+    public Setor getSetor() {
+        return setor;
+    }
+
+    public void setSetor(Setor setor) {
+        this.setor = setor;
+    }
+
+    public List<Maquina> getMaquinas() {
+        return maquinas;
+    }
+
+    public void setMaquinas(List<Maquina> maquinas) {
+        this.maquinas = maquinas;
     }
 }

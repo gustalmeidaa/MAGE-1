@@ -4,14 +4,12 @@ import MAGE.mage.dto.MaquinaDTO;
 import MAGE.mage.model.Funcionario;
 import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.FuncionarioRepository;
-import MAGE.mage.repository.MaquinaRepository;
 import MAGE.mage.service.MaquinaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,7 +36,7 @@ public class MaquinaController {
             if (responsavelOptional.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
-            maquina.setResponsavel(responsavelOptional.get());
+//            maquina.setIdResponsavel(maquinaDTO.idResponsavel());
         }
 
         Maquina maquinaSalva = maquinaService.cadastrarMaquina(maquina);
@@ -76,12 +74,12 @@ public class MaquinaController {
         if (maquinaDTO.idResponsavel() != null) {
             Optional<Funcionario> responsavelOptional = funcionarioRepository.findById(maquinaDTO.idResponsavel());
             if(responsavelOptional.isPresent()){
-                maquina.setResponsavel(responsavelOptional.get());
+//                maquina.setIdResponsavel(maquinaDTO.idResponsavel());
             }else {
                 return ResponseEntity.badRequest().build();
             }
         }else{
-            maquina.setResponsavel(null);
+            maquina.setIdResponsavel(null);
         }
 
         maquina.setCodPatrimonial(maquinaDTO.codPatrimonial());

@@ -40,7 +40,7 @@ public class Administrador {
 
     public void atribuirUsuario(Maquina maquina, Funcionario funcionario) {
         if (maquina != null && funcionario != null) {
-            maquina.setResponsavel(funcionario);
+//            maquina.setIdResponsavel(funcionario.getIdFuncionario());
         } else {
             throw new IllegalArgumentException("Máquina ou Funcionário não podem ser nulos.");
         }

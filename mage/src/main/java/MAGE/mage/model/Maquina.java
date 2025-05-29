@@ -19,7 +19,7 @@ public class Maquina {
     private BigDecimal valor;
     @ManyToOne
     @JoinColumn(name = "id_responsavel")
-    private Funcionario responsavel;
+    private Funcionario idResponsavel;
     @Column(name = "localizacao", length = 45)
     private String localizacao;
     @Column(name = "status", nullable = false)
@@ -59,12 +59,12 @@ public class Maquina {
         this.valor = valor;
     }
 
-    public Funcionario getResponsavel() {
-        return responsavel;
+    public Funcionario getIdResponsavel() {
+        return idResponsavel;
     }
 
-    public void setResponsavel(Funcionario responsavel) {
-        this.responsavel = responsavel;
+    public void setIdResponsavel(Funcionario idResponsavel) {
+        this.idResponsavel = idResponsavel;
     }
 
     public String getLocalizacao() {

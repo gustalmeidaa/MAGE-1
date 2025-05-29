@@ -17,13 +17,30 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 CREATE SCHEMA IF NOT EXISTS `MAGE` DEFAULT CHARACTER SET utf8 ;
 USE `MAGE` ;
 
+
+-- -----------------------------------------------------
+-- Tabela `MAGE`.`setor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MAGE`.`setor` (
+  `id_setor` INT NOT NULL AUTO_INCREMENT,
+  `nome_setor` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_setor`)
+) ENGINE = InnoDB;
+
 -- -----------------------------------------------------
 -- Tabela `MAGE`.`funcionario`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`funcionario` (
   `id_funcionario` INT NOT NULL AUTO_INCREMENT,
   `nome_funcionario` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id_funcionario`)
+  `id_setor` INT NOT NULL,
+  PRIMARY KEY (`id_funcionario`),
+  INDEX `id_setor_idx` (`id_setor` ASC) VISIBLE,
+  CONSTRAINT `id_setor`
+    FOREIGN KEY (`id_setor`)
+    REFERENCES `MAGE`.`setor` (`id_setor`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------

@@ -1,7 +1,10 @@
 package MAGE.mage.service;
 
+import MAGE.mage.dto.FuncionarioDTO;
 import MAGE.mage.model.Funcionario;
+import MAGE.mage.model.Setor;
 import MAGE.mage.repository.FuncionarioRepository;
+import MAGE.mage.repository.SetorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +13,29 @@ import java.util.Optional;
 
 @Service
 public class FuncionarioService {
-    @Autowired
-    private FuncionarioRepository funcionarioRepository;
 
-    public Funcionario createFuncionario(Funcionario funcionario) {
+    private final FuncionarioRepository funcionarioRepository;
+    private final SetorRepository setorRepository;
+
+    @Autowired
+    public FuncionarioService(FuncionarioRepository funcionarioRepository, SetorRepository setorRepository) {
+        this.funcionarioRepository = funcionarioRepository;
+        this.setorRepository = setorRepository;
+    }
+
+    public Funcionario createFuncionario(FuncionarioDTO funcionarioDTO) {
+        Funcionario funcionario = new Funcionario();
+        funcionario.setNomeFuncionario(funcionarioDTO.nomeFuncionario());
+
+        // Lógica para associar o setor pelo nome
+        if (funcionarioDTO.nomeSetor() != null) {
+            Optional<Setor> setor = setorRepository.findByNomeSetor(funcionarioDTO.nomeSetor());
+            if (setor.isPresent()) {
+                funcionario.setSetor(setor.get());
+            } else {
+                throw new RuntimeException("Setor não encontrado com o nome " + funcionarioDTO.nomeSetor());
+            }
+        }
         return funcionarioRepository.save(funcionario);
     }
 
@@ -25,17 +47,29 @@ public class FuncionarioService {
         return funcionarioRepository.findById(id);
     }
 
-    public Funcionario updateFuncionario(Integer id, Funcionario funcionarioDetails) {
+    public Funcionario updateFuncionario(Integer id, FuncionarioDTO funcionarioDTO) {
         Funcionario funcionario = funcionarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com o id " + id));
 
-        funcionario.setNomeFuncionario(funcionarioDetails.getNomeFuncionario());
+        funcionario.setNomeFuncionario(funcionarioDTO.nomeFuncionario());
+
+        // Atualizando o setor, se fornecido
+        if (funcionarioDTO.nomeSetor() != null) {
+            Optional<Setor> setor = setorRepository.findByNomeSetor(funcionarioDTO.nomeSetor());
+            if (setor.isPresent()) {
+                funcionario.setSetor(setor.get());
+            } else {
+                throw new RuntimeException("Setor não encontrado com o nome " + funcionarioDTO.nomeSetor());
+            }
+        }
+
         return funcionarioRepository.save(funcionario);
     }
 
     public void deleteFuncionario(Integer id) {
-        Funcionario funcionario = funcionarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com o id " + id));
-        funcionarioRepository.delete(funcionario);
+        if (!funcionarioRepository.existsById(id)) {
+            throw new RuntimeException("Funcionário não encontrado com o id " + id);
+        }
+        funcionarioRepository.deleteById(id);
     }
 }

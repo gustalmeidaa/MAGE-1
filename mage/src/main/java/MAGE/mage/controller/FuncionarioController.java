@@ -1,8 +1,10 @@
 package MAGE.mage.controller;
 
+import MAGE.mage.dto.FuncionarioDTO;
 import MAGE.mage.model.Funcionario;
 import MAGE.mage.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,9 @@ public class FuncionarioController {
     private FuncionarioService funcionarioService;
 
     @PostMapping
-    public Funcionario createFuncionario(@RequestBody Funcionario funcionario) {
-        return funcionarioService.createFuncionario(funcionario);
+    public ResponseEntity<Funcionario> createFuncionario(@RequestBody FuncionarioDTO funcionarioDTO) {
+        Funcionario createdFuncionario = funcionarioService.createFuncionario(funcionarioDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFuncionario);
     }
 
     @GetMapping
@@ -33,13 +36,22 @@ public class FuncionarioController {
     }
 
     @PutMapping("/{id}")
-    public Funcionario updateFuncionario(@PathVariable Integer id, @RequestBody Funcionario funcionarioDetails) {
-        return funcionarioService.updateFuncionario(id, funcionarioDetails);
+    public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Integer id, @RequestBody FuncionarioDTO funcionarioDTO) {
+        try {
+            Funcionario updatedFuncionario = funcionarioService.updateFuncionario(id, funcionarioDTO);
+            return ResponseEntity.ok(updatedFuncionario);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFuncionario(@PathVariable Integer id) {
-        funcionarioService.deleteFuncionario(id);
-        return ResponseEntity.noContent().build();
+        try {
+            funcionarioService.deleteFuncionario(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
