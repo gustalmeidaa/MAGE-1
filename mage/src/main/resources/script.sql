@@ -23,7 +23,7 @@ USE `MAGE` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`setor` (
   `id_setor` INT NOT NULL AUTO_INCREMENT,
-  `nome_setor` VARCHAR(45) NOT NULL,
+  `nome_setor` VARCHAR(45) NOT NULL UNIQUE,
   PRIMARY KEY (`id_setor`)
 ) ENGINE = InnoDB;
 
@@ -146,6 +146,37 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`log` (
   `data_movimentacao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_log`))
 ENGINE = InnoDB;
+
+-- Triggers para a tabela `setor`
+DELIMITER $
+
+CREATE TRIGGER log_insert_setor
+AFTER INSERT ON `MAGE`.`setor`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('INSERT', '', CONCAT('id_setor: ', NEW.id_setor, ', nome_setor: ', NEW.nome_setor));
+END $
+
+CREATE TRIGGER log_update_setor
+AFTER UPDATE ON `MAGE`.`setor`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('UPDATE',
+            CONCAT('id_setor: ', OLD.id_setor, ', nome_setor: ', OLD.nome_setor),
+            CONCAT('id_setor: ', NEW.id_setor, ', nome_setor: ', NEW.nome_setor));
+END $
+
+CREATE TRIGGER log_delete_setor
+AFTER DELETE ON `MAGE`.`setor`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `MAGE`.`log` (operacao, dados_antigos, dados_novos)
+    VALUES ('DELETE', CONCAT('id_setor: ', OLD.id_setor, ', nome_setor: ', OLD.nome_setor), '');
+END $
+
+DELIMITER ;
 
 -- Triggers para a tabela `funcionario`
 DELIMITER $

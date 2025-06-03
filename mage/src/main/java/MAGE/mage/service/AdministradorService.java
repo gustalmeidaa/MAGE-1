@@ -62,7 +62,7 @@ public class AdministradorService {
                     throw new IllegalArgumentException("Funcionário não encontrado com ID: " + idFuncionario);
                 }
             } else {
-                maquina.setIdResponsavel(null);
+                maquina.setResponsavel(null);
             }
 
             maquinaRepository.save(maquina);

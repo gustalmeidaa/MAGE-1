@@ -1,4 +1,12 @@
 package MAGE.mage.dto;
 
-public record FuncionarioDTO(String nomeFuncionario, String nomeSetor) {
+import MAGE.mage.model.Maquina;
+
+import java.util.List;
+
+public record FuncionarioDTO(
+        String nomeFuncionario,
+        String nomeSetor,
+        List<Maquina> maquinas
+) {
 }

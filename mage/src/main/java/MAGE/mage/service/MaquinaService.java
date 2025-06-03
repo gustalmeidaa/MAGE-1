@@ -1,6 +1,9 @@
 package MAGE.mage.service;
 
+import MAGE.mage.dto.MaquinaDTO;
+import MAGE.mage.model.Funcionario;
 import MAGE.mage.model.Maquina;
+import MAGE.mage.repository.FuncionarioRepository;
 import MAGE.mage.repository.MaquinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,40 @@ public class MaquinaService {
 
     @Autowired
     private MaquinaRepository maquinaRepository;
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
 
+    public MaquinaDTO maquinaParaDTO(Maquina maquina){
+//        Integer idResponsavel = ( maquina.getResponsavel() != null ) ? maquina.getResponsavel().getIdFuncionario() : null;
+        Integer idResponsavel = null;
+        if (maquina.getResponsavel() != null) {
+            idResponsavel = maquina.getResponsavel().getIdFuncionario();
+        }
+        return new MaquinaDTO(
+                maquina.getCodPatrimonial(),
+                maquina.getNumSerie(),
+                maquina.getValor(),
+                idResponsavel,
+                maquina.getLocalizacao(),
+                maquina.getStatus()
+        );
+    }
+    public Maquina dtoParaMaquina(MaquinaDTO maquinaDTO){
+        Maquina maquina = new Maquina();
+        maquina.setCodPatrimonial(maquinaDTO.codPatrimonial());
+        maquina.setNumSerie(maquinaDTO.numSerie());
+        maquina.setValor(maquinaDTO.valor());
+        maquina.setLocalizacao(maquinaDTO.localizacao());
+        maquina.setStatus(maquinaDTO.status());
+
+        if(maquinaDTO.idResponsavel() != null){
+            Optional<Funcionario> responsavel = funcionarioRepository.findById(maquinaDTO.idResponsavel());
+            responsavel.ifPresent(maquina::setResponsavel);
+        }
+        return maquina;
+    }
+
+    // CRUD
     public Maquina cadastrarMaquina(Maquina maquina) {
         return maquinaRepository.save(maquina);
     }
@@ -25,6 +61,11 @@ public class MaquinaService {
     }
 
     public Optional<Maquina> buscarMaquina(Integer id) {
+        Optional<Maquina> maquinaOptional = maquinaRepository.findById(id);
+        if (maquinaOptional.isPresent()){
+            Maquina maquina = maquinaOptional.get();
+
+        }
         return maquinaRepository.findById(id);
     }
 

@@ -1,5 +1,8 @@
 package MAGE.mage.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,7 +22,9 @@ public class Funcionario {
     @JoinColumn(name = "id_setor")
     private Setor setor;
 
-    @OneToMany(mappedBy = "idResponsavel")
+    @OneToMany(mappedBy = "responsavel")
+//    @JsonIgnore // Solução razoável
+//    @JsonManagedReference
     private List<Maquina> maquinas;
 
     // Getters e Setters

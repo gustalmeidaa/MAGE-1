@@ -6,6 +6,7 @@ import MAGE.mage.model.Setor;
 import MAGE.mage.repository.FuncionarioRepository;
 import MAGE.mage.repository.SetorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +15,19 @@ import java.util.Optional;
 @Service
 public class FuncionarioService {
 
-    private final FuncionarioRepository funcionarioRepository;
-    private final SetorRepository setorRepository;
+//    private final FuncionarioRepository funcionarioRepository;
+//    private final SetorRepository setorRepository;
 
     @Autowired
-    public FuncionarioService(FuncionarioRepository funcionarioRepository, SetorRepository setorRepository) {
-        this.funcionarioRepository = funcionarioRepository;
-        this.setorRepository = setorRepository;
-    }
+    @Lazy
+    private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private SetorRepository setorRepository;
+//    public FuncionarioService(FuncionarioRepository funcionarioRepository, SetorRepository setorRepository) {
+//        this.funcionarioRepository = funcionarioRepository;
+//        this.setorRepository = setorRepository;
+//    }
 
     public Funcionario createFuncionario(FuncionarioDTO funcionarioDTO) {
         Funcionario funcionario = new Funcionario();

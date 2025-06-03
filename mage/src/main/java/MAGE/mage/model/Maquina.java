@@ -19,7 +19,8 @@ public class Maquina {
     private BigDecimal valor;
     @ManyToOne
     @JoinColumn(name = "id_responsavel")
-    private Funcionario idResponsavel;
+//    @JsonBackReference // evita a serialização
+    private Funcionario responsavel;
     @Column(name = "localizacao", length = 45)
     private String localizacao;
     @Column(name = "status", nullable = false)
@@ -59,12 +60,12 @@ public class Maquina {
         this.valor = valor;
     }
 
-    public Funcionario getIdResponsavel() {
-        return idResponsavel;
+    public Funcionario getResponsavel() {
+        return responsavel;
     }
 
-    public void setIdResponsavel(Funcionario idResponsavel) {
-        this.idResponsavel = idResponsavel;
+    public void setResponsavel(Funcionario responsavel) {
+        this.responsavel = responsavel;
     }
 
     public String getLocalizacao() {
