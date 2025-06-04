@@ -24,7 +24,7 @@ public class Funcionario {
 
     @OneToMany(mappedBy = "responsavel")
 //    @JsonIgnore // Solução razoável
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<Maquina> maquinas;
 
     // Getters e Setters

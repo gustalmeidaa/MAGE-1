@@ -5,9 +5,11 @@ import MAGE.mage.model.Funcionario;
 import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.FuncionarioRepository;
 import MAGE.mage.repository.MaquinaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class MaquinaService {
 
     // CRUD
     public Maquina cadastrarMaquina(Maquina maquina) {
+        validarValorPositivo(maquina.getValor());
         return maquinaRepository.save(maquina);
     }
 
@@ -61,15 +64,11 @@ public class MaquinaService {
     }
 
     public Optional<Maquina> buscarMaquina(Integer id) {
-        Optional<Maquina> maquinaOptional = maquinaRepository.findById(id);
-        if (maquinaOptional.isPresent()){
-            Maquina maquina = maquinaOptional.get();
-
-        }
         return maquinaRepository.findById(id);
     }
 
     public Maquina atualizarMaquina(Maquina maquina) {
+        validarValorPositivo(maquina.getValor());
         return maquinaRepository.save(maquina);
     }
 
@@ -126,5 +125,11 @@ public class MaquinaService {
 
     public List<Maquina> buscarPorNumSerie(String numSerie) {
         return maquinaRepository.findByNumSerie(numSerie);
+    }
+
+    private void validarValorPositivo(BigDecimal valor) {
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("O valor deve ser positivo.");
+        }
     }
 }

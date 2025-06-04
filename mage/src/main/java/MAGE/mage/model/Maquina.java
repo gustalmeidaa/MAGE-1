@@ -1,5 +1,6 @@
 package MAGE.mage.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -15,11 +16,11 @@ public class Maquina {
     private String codPatrimonial;
     @Column(name = "num_serie", length = 45, nullable = false, unique = true)
     private String numSerie;
-    @Column(name = "valor", nullable = false) // Podemos adicionar o número de casas decimais se necessário
+    @Column(name = "valor", nullable = false)
     private BigDecimal valor;
     @ManyToOne
     @JoinColumn(name = "id_responsavel")
-//    @JsonBackReference // evita a serialização
+    @JsonBackReference // evita a serialização
     private Funcionario responsavel;
     @Column(name = "localizacao", length = 45)
     private String localizacao;
