@@ -1,8 +1,8 @@
 // Criação de container
 docker run -d --name mysql-container \
-  -e MYSQL_ROOT_PASSWORD=TG-MAGE \
+  -e MYSQL_ROOT_PASSWORD=Tg-Mage25! \
   -e MYSQL_USER=Sistema \
-  -e MYSQL_PASSWORD=TG-MAGE \
+  -e MYSQL_PASSWORD=Tg-Mage25! \
   -p 3306:3306 \
   mysql:latest
 

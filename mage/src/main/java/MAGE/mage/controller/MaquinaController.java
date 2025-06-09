@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/maquinas")
 public class MaquinaController {
@@ -93,7 +92,6 @@ public class MaquinaController {
         return ResponseEntity.ok(maquinasDTO);
     }
 
-    // Endpoint para buscar máquinas pelo número de série
     @GetMapping("/buscar/num-serie/{numSerie}")
     public ResponseEntity<List<MaquinaDTO>> buscarPorNumSerie(@PathVariable String numSerie) {
         List<Maquina> maquinas = maquinaService.buscarPorNumSerie(numSerie);
