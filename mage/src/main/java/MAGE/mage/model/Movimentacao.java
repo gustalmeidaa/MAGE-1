@@ -2,6 +2,8 @@ package MAGE.mage.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "registro_de_movimentacoes")
 public class Movimentacao {
@@ -21,8 +23,11 @@ public class Movimentacao {
     private String origem;
     @Column(name = "destino", length = 45)
     private String destino;
+    @Column(name = "data")
+    private LocalDateTime data;
 
     // getters e setters
+
 
     public Integer getIdMovimentacoes() {
         return idMovimentacoes;
@@ -62,5 +67,13 @@ public class Movimentacao {
 
     public void setDestino(String destino) {
         this.destino = destino;
+    }
+
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
     }
 }

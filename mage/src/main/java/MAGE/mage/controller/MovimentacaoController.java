@@ -37,18 +37,19 @@ public class MovimentacaoController {
     public ResponseEntity<Movimentacao> createMovimentacao(@RequestBody MovimentacaoDTO movimentacaoDTO) {
         Movimentacao movimentacao = new Movimentacao();
 
-            Optional<Maquina> maquinaOptional = maquinaRepository.findById(movimentacaoDTO.idMaquinaMovimentada());
-            if (maquinaOptional.isEmpty()){
-                return ResponseEntity.badRequest().build();
-            }
+        Optional<Maquina> maquinaOptional = maquinaRepository.findById(movimentacaoDTO.idMaquinaMovimentada());
+        if (maquinaOptional.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         movimentacao.setMaquinaMovimentada(maquinaOptional.get());
 
         movimentacao.setTipo(movimentacaoDTO.tipo());
         movimentacao.setOrigem(movimentacaoDTO.origem());
         movimentacao.setDestino(movimentacaoDTO.destino());
+        movimentacao.setData(movimentacaoDTO.data()); // Adicionado o setData
 
         Movimentacao movimentacaoSalva = service.save(movimentacao);
-        return ResponseEntity.ok(movimentacao);
+        return ResponseEntity.ok(movimentacaoSalva); // Retornar a movimentacao salva
     }
 
     @PutMapping("/{id}")

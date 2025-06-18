@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`registro_de_movimentacoes` (
   `tipo_de_movimentacao` VARCHAR(45) NOT NULL,
   `origem` VARCHAR(45) NOT NULL,
   `destino` VARCHAR(45) NOT NULL,
+  `data` DATETIME NOT NULL,
   PRIMARY KEY (`id_registro_de_movimentacoes`),
   INDEX `id_responsavel_idx` (`id_maquina_movimentada` ASC) VISIBLE,
   CONSTRAINT `fk_maquina_movimentada`
