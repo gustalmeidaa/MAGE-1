@@ -5,6 +5,7 @@ import MAGE.mage.model.AtribuirUsuarioRequest;
 import MAGE.mage.service.AdministradorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class AdministradorController {
 
     @PostMapping
     public ResponseEntity<Administrador> create(@RequestBody Administrador administrador) {
+        administrador.setSenha(new BCryptPasswordEncoder().encode(administrador.getPassword())); //trecho a ser removido
         Administrador created = administradorService.create(administrador);
         return ResponseEntity.ok(created);
     }
@@ -46,13 +48,13 @@ public class AdministradorController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/atribuirUsuario")
-    public ResponseEntity<Void> atribuirUsuario(@RequestBody AtribuirUsuarioRequest request) {
-        System.out.println("ID da Máquina: " + request.getIdMaquina());
-        System.out.println("ID do Funcionário: " + request.getIdFuncionario());
-
-        administradorService.atribuirUsuario(request.getIdMaquina(), request.getIdFuncionario());
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/atribuirUsuario")
+//    public ResponseEntity<Void> atribuirUsuario(@RequestBody AtribuirUsuarioRequest request) {
+//        System.out.println("ID da Máquina: " + request.getIdMaquina());
+//        System.out.println("ID do Funcionário: " + request.getIdFuncionario());
+//
+//        administradorService.atribuirUsuario(request.getIdMaquina(), request.getIdFuncionario());
+//        return ResponseEntity.ok().build();
+//    }
 
 }

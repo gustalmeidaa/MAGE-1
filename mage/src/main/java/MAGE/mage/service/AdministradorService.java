@@ -46,28 +46,28 @@ public class AdministradorService {
         administradorRepository.deleteById(id);
     }
 
-    public void atribuirUsuario(Integer idMaquina, Integer idFuncionario) {
-        Optional<Maquina> maquinaOpt = maquinaRepository.findById(idMaquina);
-
-        if (maquinaOpt.isPresent()) {
-            Maquina maquina = maquinaOpt.get();
-
-            if (idFuncionario != null) {
-                Optional<Funcionario> funcionarioOpt = funcionarioRepository.findById(idFuncionario);
-                if (funcionarioOpt.isPresent()) {
-                    Funcionario funcionario = funcionarioOpt.get();
-                    Administrador administrador = new Administrador();
-                    administrador.atribuirUsuario(maquina, funcionario);
-                } else {
-                    throw new IllegalArgumentException("Funcionário não encontrado com ID: " + idFuncionario);
-                }
-            } else {
-                maquina.setResponsavel(null);
-            }
-
-            maquinaRepository.save(maquina);
-        } else {
-            throw new IllegalArgumentException("Máquina não encontrada com ID: " + idMaquina);
-        }
-    }
+//    public void atribuirUsuario(Integer idMaquina, Integer idFuncionario) {
+//        Optional<Maquina> maquinaOpt = maquinaRepository.findById(idMaquina);
+//
+//        if (maquinaOpt.isPresent()) {
+//            Maquina maquina = maquinaOpt.get();
+//
+//            if (idFuncionario != null) {
+//                Optional<Funcionario> funcionarioOpt = funcionarioRepository.findById(idFuncionario);
+//                if (funcionarioOpt.isPresent()) {
+//                    Funcionario funcionario = funcionarioOpt.get();
+//                    Administrador administrador = new Administrador(); // A ser refatorado
+//                    administrador.atribuirUsuario(maquina, funcionario);
+//                } else {
+//                    throw new IllegalArgumentException("Funcionário não encontrado com ID: " + idFuncionario);
+//                }
+//            } else {
+//                maquina.setResponsavel(null);
+//            }
+//
+//            maquinaRepository.save(maquina);
+//        } else {
+//            throw new IllegalArgumentException("Máquina não encontrada com ID: " + idMaquina);
+//        }
+//    }
 }
