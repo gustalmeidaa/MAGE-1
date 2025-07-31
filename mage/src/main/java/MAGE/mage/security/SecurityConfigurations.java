@@ -28,17 +28,13 @@ public class SecurityConfigurations {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.POST, "/administradores").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.PUT, "/administradores").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/administradores/{login}").hasRole("ADMINISTRADOR")
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()
-//                );
-//        return http.build();
     }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

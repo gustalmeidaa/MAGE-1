@@ -1,13 +1,14 @@
 package MAGE.mage.service;
 
+import MAGE.mage.dto.AdministradorDto;
 import MAGE.mage.model.Administrador;
-import MAGE.mage.model.Funcionario;
-import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.AdministradorRepository;
 import MAGE.mage.repository.FuncionarioRepository;
 import MAGE.mage.repository.MaquinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,25 +26,32 @@ public class AdministradorService {
     @Autowired
     private MaquinaRepository maquinaRepository;
 
-    public Administrador create(Administrador administrador) {
-        return administradorRepository.save(administrador);
+    public Administrador create (@RequestBody AdministradorDto administradorDto){
+        if (this.administradorRepository.findByLogin(administradorDto.login()) != null) return null;
+        String encryptedPassword = new BCryptPasswordEncoder().encode(administradorDto.senha());
+        Administrador administrador = new Administrador(administradorDto.login(), encryptedPassword);
+        return this.administradorRepository.save(administrador);
     }
 
     public List<Administrador> findAll() {
         return administradorRepository.findAll();
     }
 
-    public Optional<Administrador> findById(Integer id) {
-        return administradorRepository.findById(id);
+    public Optional<Administrador> findById(String login) {
+        return administradorRepository.findById(login);
     }
 
-    public Administrador update(Integer id, Administrador administrador) {
-        administrador.setIdAdm(id);
-        return administradorRepository.save(administrador);
+    public Administrador update(Administrador administrador) {
+        if (this.administradorRepository.findByLogin(administrador.getUsername()) != null){
+            return administradorRepository.save(administrador);
+        }
+        else {
+            return null;
+        }
     }
 
-    public void delete(Integer id) {
-        administradorRepository.deleteById(id);
+    public void delete(String login) {
+        administradorRepository.deleteById(login);
     }
 
 //    public void atribuirUsuario(Integer idMaquina, Integer idFuncionario) {

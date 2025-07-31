@@ -11,42 +11,43 @@ import java.util.List;
 @Entity
 @Table(name = "administrador")
 public class Administrador implements UserDetails {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id_adm")
+//    private Integer idAdm;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_adm")
-    private Integer idAdm;
     @Column(name = "login", length = 45)
     private String login;
     @Column(name = "senha", length = 60)
     private String senha;
 
-//    public Administrador(String login, String encryptedPassword) {
-//        this.setLogin(login);
-//        this.setSenha(encryptedPassword);
-//    }
+    public Administrador(String login, String encryptedPassword) {
+        this.login = login;
+        this.senha = encryptedPassword;
+    }
 
     public Administrador() {}
 
 
-    public Integer getIdAdm() {
-        return idAdm;
-    }
-
-    public void setIdAdm(Integer idAdm) {
-        this.idAdm = idAdm;
-    }
-
-//    public String getLogin() {
-//        return login;
+//    public Integer getIdAdm() {
+//        return idAdm;
 //    }
+//
+//    public void setIdAdm(Integer idAdm) {
+//        this.idAdm = idAdm;
+//    }
+
+    public String getLogin() {
+        return login;
+    }
 
     public void setLogin(String login) {
         this.login = login;
     }
 
-//    public String getSenha() {
-//        return senha;
-//    }
+    public String getSenha() {
+        return senha;
+    }
 
     public void setSenha(String senha) {
         this.senha = senha;

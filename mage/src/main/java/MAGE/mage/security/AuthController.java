@@ -1,7 +1,6 @@
 package MAGE.mage.security;
 
-import MAGE.mage.security.dto.AuthenticationDto;
-import MAGE.mage.security.dto.RegisterDto;
+import MAGE.mage.dto.AdministradorDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +16,7 @@ public class AuthController {
     AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid AuthenticationDto authenticationDto){
-        return authorizationService.login(authenticationDto);
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody RegisterDto registerDto){
-        return authorizationService.register(registerDto);
+    public ResponseEntity<Object> login(@RequestBody @Valid AdministradorDto administradorDto){
+        return authorizationService.login(administradorDto);
     }
 }

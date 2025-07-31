@@ -47,10 +47,9 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`funcionario` (
 -- Tabela `MAGE`.`administrador`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `MAGE`.`administrador` (
-  `id_adm` INT NOT NULL AUTO_INCREMENT,
-  `login` VARCHAR(45) NOT NULL,
+  `login` VARCHAR(45) NOT NULL UNIQUE,
   `senha` VARCHAR(60) NOT NULL,
-  PRIMARY KEY (`id_adm`)
+  PRIMARY KEY (`login`)
 ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -367,6 +366,10 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- primeiro admin
+INSERT INTO `MAGE`.`administrador` (login, senha)
+VALUES ('admin0', '$2a$10$xkksBclOMbTQqW90p5/YSuAkT8F711QR21oBLXA3Quj4BYAIO4ryS');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

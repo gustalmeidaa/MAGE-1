@@ -1,11 +1,11 @@
 package MAGE.mage.controller;
 
+import MAGE.mage.dto.AdministradorDto;
 import MAGE.mage.model.Administrador;
-import MAGE.mage.model.AtribuirUsuarioRequest;
 import MAGE.mage.service.AdministradorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,11 +18,14 @@ public class AdministradorController {
     private AdministradorService administradorService;
 
     @PostMapping
-    public ResponseEntity<Administrador> create(@RequestBody Administrador administrador) {
-        administrador.setSenha(new BCryptPasswordEncoder().encode(administrador.getPassword())); //trecho a ser removido
-        Administrador created = administradorService.create(administrador);
-        return ResponseEntity.ok(created);
+    public ResponseEntity<Administrador> create(@RequestBody AdministradorDto administradorDto){
+        Administrador administrador = administradorService.create(administradorDto);
+        if (administrador == null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(administrador);
     }
+
 
     @GetMapping
     public ResponseEntity<List<Administrador>> findAll() {
@@ -30,21 +33,25 @@ public class AdministradorController {
         return ResponseEntity.ok(administradores);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Administrador> findById(@PathVariable Integer id) {
-        return administradorService.findById(id)
+    @GetMapping("/{login}")
+    public ResponseEntity<Administrador> findById(@PathVariable String login) {
+        return administradorService.findById(login)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Administrador> update(@PathVariable Integer id, @RequestBody Administrador administrador) {
-        return ResponseEntity.ok(administradorService.update(id, administrador));
+    @PutMapping
+    public ResponseEntity<Administrador> update(@RequestBody Administrador administrador) {
+        Administrador administrador1 = administradorService.update(administrador);
+        if (administrador1 == null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+        return ResponseEntity.ok(administrador1);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        administradorService.delete(id);
+    @DeleteMapping("/{login}")
+    public ResponseEntity<Void> delete(@PathVariable String login) {
+        administradorService.delete(login);
         return ResponseEntity.noContent().build();
     }
 
