@@ -1,5 +1,7 @@
 package MAGE.mage.dto;
 
+import MAGE.mage.model.StatusMaquina;
+
 import java.math.BigDecimal;
 
 public record MaquinaDTO(
@@ -8,6 +10,7 @@ public record MaquinaDTO(
         BigDecimal valor,
         Integer idResponsavel,
         String localizacao,
-        String status
+        StatusMaquina status,
+        String descricao
 ) {
 }

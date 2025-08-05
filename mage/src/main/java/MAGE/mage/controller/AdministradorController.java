@@ -2,6 +2,7 @@ package MAGE.mage.controller;
 
 import MAGE.mage.dto.AdministradorDto;
 import MAGE.mage.model.Administrador;
+import MAGE.mage.model.AtribuirUsuarioRequest;
 import MAGE.mage.service.AdministradorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,13 +56,13 @@ public class AdministradorController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PostMapping("/atribuirUsuario")
-//    public ResponseEntity<Void> atribuirUsuario(@RequestBody AtribuirUsuarioRequest request) {
-//        System.out.println("ID da Máquina: " + request.getIdMaquina());
-//        System.out.println("ID do Funcionário: " + request.getIdFuncionario());
-//
-//        administradorService.atribuirUsuario(request.getIdMaquina(), request.getIdFuncionario());
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/atribuirUsuario")
+    public ResponseEntity<Void> atribuirUsuario(@RequestBody AtribuirUsuarioRequest request) {
+        System.out.println("ID da Máquina: " + request.getIdMaquina());
+        System.out.println("ID do Funcionário: " + request.getIdFuncionario());
+
+        administradorService.atribuirUsuario(request.getIdMaquina(), request.getIdFuncionario());
+        return ResponseEntity.ok().build();
+    }
 
 }

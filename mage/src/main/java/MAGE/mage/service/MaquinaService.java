@@ -35,7 +35,8 @@ public class MaquinaService {
                 maquina.getValor(),
                 idResponsavel,
                 maquina.getLocalizacao(),
-                maquina.getStatus()
+                maquina.getStatus(),
+                maquina.getDescricao()
         );
     }
     public Maquina dtoParaMaquina(MaquinaDTO maquinaDTO){

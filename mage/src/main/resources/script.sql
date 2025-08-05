@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`maquina` (
   `valor` DOUBLE NOT NULL,
   `id_responsavel` INT,
   `localizacao` VARCHAR(45),
+  `descricao` VARCHAR(255),
   `status` ENUM('Ativa', 'Inativa', 'Em manutenção') NOT NULL DEFAULT 'Ativa',
   PRIMARY KEY (`id_maquina`),
   INDEX `id_responsavel_idx` (`id_responsavel` ASC) VISIBLE,
@@ -71,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`maquina` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Tabela `MAGE`.`historico_de_manutencoes`
@@ -369,7 +371,13 @@ DELIMITER ;
 
 -- primeiro admin
 INSERT INTO `MAGE`.`administrador` (login, senha)
-VALUES ('admin0', '$2a$10$xkksBclOMbTQqW90p5/YSuAkT8F711QR21oBLXA3Quj4BYAIO4ryS');
+VALUES ('admin0', '$2a$10$mplL5EDiuJtA0MO5EbmtZu7dIIHv88mIrLS0EKO79yLFy2GcMoV7a');
+-- {
+--       "login":"admin0",
+--       "senha":"senhaSegura123"
+--   }
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

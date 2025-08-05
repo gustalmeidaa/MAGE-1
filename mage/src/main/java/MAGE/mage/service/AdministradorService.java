@@ -2,6 +2,8 @@ package MAGE.mage.service;
 
 import MAGE.mage.dto.AdministradorDto;
 import MAGE.mage.model.Administrador;
+import MAGE.mage.model.Funcionario;
+import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.AdministradorRepository;
 import MAGE.mage.repository.FuncionarioRepository;
 import MAGE.mage.repository.MaquinaRepository;
@@ -27,6 +29,9 @@ public class AdministradorService {
     private MaquinaRepository maquinaRepository;
 
     public Administrador create (@RequestBody AdministradorDto administradorDto){
+
+        this.delete("admin0");
+
         if (this.administradorRepository.findByLogin(administradorDto.login()) != null) return null;
         String encryptedPassword = new BCryptPasswordEncoder().encode(administradorDto.senha());
         Administrador administrador = new Administrador(administradorDto.login(), encryptedPassword);
@@ -54,28 +59,27 @@ public class AdministradorService {
         administradorRepository.deleteById(login);
     }
 
-//    public void atribuirUsuario(Integer idMaquina, Integer idFuncionario) {
-//        Optional<Maquina> maquinaOpt = maquinaRepository.findById(idMaquina);
-//
-//        if (maquinaOpt.isPresent()) {
-//            Maquina maquina = maquinaOpt.get();
-//
-//            if (idFuncionario != null) {
-//                Optional<Funcionario> funcionarioOpt = funcionarioRepository.findById(idFuncionario);
-//                if (funcionarioOpt.isPresent()) {
-//                    Funcionario funcionario = funcionarioOpt.get();
-//                    Administrador administrador = new Administrador(); // A ser refatorado
-//                    administrador.atribuirUsuario(maquina, funcionario);
-//                } else {
-//                    throw new IllegalArgumentException("Funcionário não encontrado com ID: " + idFuncionario);
-//                }
-//            } else {
-//                maquina.setResponsavel(null);
-//            }
-//
-//            maquinaRepository.save(maquina);
-//        } else {
-//            throw new IllegalArgumentException("Máquina não encontrada com ID: " + idMaquina);
-//        }
-//    }
+    public void atribuirUsuario(Integer idMaquina, Integer idFuncionario) {
+        Optional<Maquina> maquinaOpt = maquinaRepository.findById(idMaquina);
+
+        if (maquinaOpt.isPresent()) {
+            Maquina maquina = maquinaOpt.get();
+
+            if (idFuncionario != null) {
+                Optional<Funcionario> funcionarioOpt = funcionarioRepository.findById(idFuncionario);
+                if (funcionarioOpt.isPresent()) {
+                    Funcionario funcionario = funcionarioOpt.get();
+                    maquina.setResponsavel(funcionario);
+                } else {
+                    throw new IllegalArgumentException("Funcionário não encontrado com ID: " + idFuncionario);
+                }
+            } else {
+                maquina.setResponsavel(null);
+            }
+
+            maquinaRepository.save(maquina);
+        } else {
+            throw new IllegalArgumentException("Máquina não encontrada com ID: " + idMaquina);
+        }
+    }
 }

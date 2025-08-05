@@ -24,8 +24,11 @@ public class Maquina {
     private Funcionario responsavel;
     @Column(name = "localizacao", length = 45)
     private String localizacao;
+    @Column(name = "descricao")
+    private String descricao;
     @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusMaquina status;
 
     // getters e setters
 
@@ -77,11 +80,19 @@ public class Maquina {
         this.localizacao = localizacao;
     }
 
-    public String getStatus() {
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public StatusMaquina getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusMaquina status) {
         this.status = status;
     }
 }
