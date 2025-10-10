@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `MAGE`.`maquina` (
   `id_responsavel` INT,
   `localizacao` VARCHAR(45),
   `descricao` VARCHAR(255),
-  `status` ENUM('Ativa', 'Inativa', 'Em manutenção') NOT NULL DEFAULT 'Ativa',
+  status ENUM('ATIVA', 'INATIVA', 'EM_MANUTENCAO') NOT NULL DEFAULT 'ATIVA',
   PRIMARY KEY (`id_maquina`),
   INDEX `id_responsavel_idx` (`id_responsavel` ASC) VISIBLE,
   CONSTRAINT `id_responsavel`
