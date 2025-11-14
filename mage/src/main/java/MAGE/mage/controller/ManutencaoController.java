@@ -1,12 +1,15 @@
 package MAGE.mage.controller;
 
 import MAGE.mage.dto.ManutencaoDTO;
+import MAGE.mage.dto.MaquinaDTO;
 import MAGE.mage.model.Funcionario;
 import MAGE.mage.model.Manutencao;
 import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.FuncionarioRepository;
 import MAGE.mage.repository.MaquinaRepository;
+import MAGE.mage.security.TokenService;
 import MAGE.mage.service.ManutencaoService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +22,38 @@ import java.util.Optional;
 public class ManutencaoController {
 
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private ManutencaoService manutencaoService;
     @Autowired
     private MaquinaRepository maquinaRepository;
     @Autowired
     private FuncionarioRepository funcionarioRepository;
+
+    public Manutencao dtoParaManutencao(ManutencaoDTO manutencaoDTO){
+        Manutencao manutencao = new Manutencao();
+        manutencao.setData(manutencaoDTO.data());
+        manutencao.setTipoManutencao(manutencaoDTO.tipoManutencao());
+        manutencao.setProcedimentos(manutencaoDTO.procedimentos());
+
+        if (manutencaoDTO.idMaquina() != null) {
+            Optional<Maquina> maquinaOptional = maquinaRepository.findById(manutencaoDTO.idMaquina());
+//            if (maquinaOptional.isEmpty()) {
+//                return ResponseEntity.badRequest().build();
+//            }
+            manutencao.setIdMaquina(maquinaOptional.get());
+        }
+
+        if (manutencaoDTO.idFuncionario() != null) {
+            Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(manutencaoDTO.idFuncionario());
+//            if (funcionarioOptional.isEmpty()) {
+//                return ResponseEntity.badRequest().build();
+//            }
+            manutencao.setIdFuncionario(funcionarioOptional.get());
+        }
+        return manutencao;
+    }
 
     @GetMapping
     public List<Manutencao> getAllManutencoes() {
@@ -38,47 +68,40 @@ public class ManutencaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Manutencao> createManutencao(@RequestBody ManutencaoDTO manutencaoDTO) {
-        Manutencao manutencao = new Manutencao();
-        manutencao.setData(manutencaoDTO.data());
-        manutencao.setTipoManutencao(manutencaoDTO.tipoManutencao());
-        manutencao.setProcedimentos(manutencaoDTO.procedimentos());
+    public ResponseEntity<Manutencao> createManutencao(@RequestBody ManutencaoDTO manutencaoDTO, HttpServletRequest request) {
+        String loginUsuario = tokenService.getCurrentUserLogin(request);
 
-        if (manutencaoDTO.idMaquina() != null){
-            Optional<Maquina> maquinaOptional = maquinaRepository.findById(manutencaoDTO.idMaquina());
-            if (maquinaOptional.isEmpty()){
-                return ResponseEntity.badRequest().build();
-            }
-            manutencao.setIdMaquina(maquinaOptional.get());
-        }
+        Manutencao manutencao = this.dtoParaManutencao(manutencaoDTO);
 
-        if (manutencaoDTO.idFuncionario() != null){
-            Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(manutencaoDTO.idFuncionario());
-            if (funcionarioOptional.isEmpty()){
-                return ResponseEntity.badRequest().build();
-            }
-            manutencao.setIdFuncionario(funcionarioOptional.get());
-        }
-
-        Manutencao manutencaoSalva = manutencaoService.save(manutencao);
+        Manutencao manutencaoSalva = manutencaoService.save(manutencao, loginUsuario);
         return ResponseEntity.ok(manutencaoSalva);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Manutencao> updateManutencao(@PathVariable Integer id, @RequestBody Manutencao manutencao) {
-        if (!manutencaoService.findById(id).isPresent()) {
+    public ResponseEntity<Manutencao> updateManutencao(@PathVariable Integer id, @RequestBody ManutencaoDTO manutencaoDTO, HttpServletRequest request) {
+        String loginUsuario = tokenService.getCurrentUserLogin(request);
+
+        if (manutencaoService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+
+        Manutencao manutencao = this.dtoParaManutencao(manutencaoDTO);
+
+        // Enviar erro caso id de máquina fornecido seja nulo
+
         manutencao.setIdHistoricoManutencoes(id);
-        return ResponseEntity.ok(manutencaoService.save(manutencao));
+        Manutencao updatedManutencao = manutencaoService.update(manutencao, loginUsuario);
+        return ResponseEntity.ok(updatedManutencao);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteManutencao(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteManutencao(@PathVariable Integer id, HttpServletRequest request) {
+        String loginUsuario = tokenService.getCurrentUserLogin(request);
         if (!manutencaoService.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        manutencaoService.deleteById(id);
+        manutencaoService.deleteById(id, loginUsuario);
         return ResponseEntity.noContent().build();
     }
 }

@@ -12,6 +12,9 @@ import java.util.Optional;
 public class ManutencaoAgendadaService {
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private ManutencaoAgendadaRepository repository;
 
     public List<ManutencaoAgendada> findAll() {
@@ -22,11 +25,22 @@ public class ManutencaoAgendadaService {
         return repository.findById(id);
     }
 
-    public ManutencaoAgendada save(ManutencaoAgendada manutencaoAgendada) {
-        return repository.save(manutencaoAgendada);
+    public ManutencaoAgendada save(ManutencaoAgendada manutencaoAgendada, String loginUsuario) {
+        ManutencaoAgendada savedManutencaoAgendada = repository.save(manutencaoAgendada);
+
+        // Log de inserção
+        logService.addLog("INSERT", "", savedManutencaoAgendada.toString(), loginUsuario);
+
+        return savedManutencaoAgendada;
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Integer id, String loginUsuario) {
+        Optional<ManutencaoAgendada> manutencaoAgendada = repository.findById(id);
+        String oldData = manutencaoAgendada.isPresent() ? manutencaoAgendada.get().toString() : "";
+
         repository.deleteById(id);
+
+        // Log de deleção
+        logService.addLog("DELETE", oldData, "", loginUsuario);
     }
 }

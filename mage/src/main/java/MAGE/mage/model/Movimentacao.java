@@ -76,4 +76,15 @@ public class Movimentacao {
     public void setData(LocalDateTime data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "id_registro_de_movimentacoes: " + idMovimentacoes +
+                ", maquina_movimentada: " + (maquinaMovimentada != null ? maquinaMovimentada.getCodPatrimonial() : "null") +
+                ", tipo_de_movimentacao: " + tipo +
+                ", origem: " + origem +
+                ", destino: " + destino +
+                ", data: " + data;
+    }
+
 }

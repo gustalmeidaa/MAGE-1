@@ -25,7 +25,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToken(request);
+        var token = tokenService.recoverToken(request);
 
         if (token != null){
             var login = tokenService.validateToken(token);
@@ -39,9 +39,15 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String recoverToken(HttpServletRequest request){
-        var authHeader = request.getHeader("Authorization");
-        if (authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
-    }
+//    public String recoverToken(HttpServletRequest request){
+//        var authHeader = request.getHeader("Authorization");
+//        if (authHeader == null) return null;
+//        return authHeader.replace("Bearer ", "");
+//    }
+//
+//    // Metodo para extrair o login do usuário do token JWT
+//    public String getCurrentUserLogin(HttpServletRequest request) {
+//        String token = recoverToken(request);
+//        return tokenService.validateToken(token);
+//    }
 }

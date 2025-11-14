@@ -66,4 +66,14 @@ public class ManutencaoAgendada {
     public void setMaquina(Maquina maquina) {
         this.maquina = maquina;
     }
+
+    @Override
+    public String toString() {
+        return "id_manutencao_agendada: " + idManutencaoAgendada +
+                ", data_agendada: " + dataAgendada +
+                ", tipo_de_manutencao: " + tipoManutencao +
+                ", procedimentos: " + procedimentos +
+                ", maquina: " + (maquina != null ? maquina.getCodPatrimonial() : "null");
+    }
+
 }

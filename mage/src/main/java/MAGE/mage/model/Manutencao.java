@@ -71,4 +71,15 @@ public class Manutencao {
     public void setIdFuncionario(Funcionario idFuncionario) {
         this.idFuncionario = idFuncionario;
     }
+
+    @Override
+    public String toString() {
+        return "id_historico_de_manutencoes: " + idHistoricoManutencoes +
+                ", data: " + data +
+                ", tipo_de_manutencao: " + tipoManutencao +
+                ", procedimentos_realizados: " + procedimentos +
+                ", maquina: " + (idMaquina != null ? idMaquina.getCodPatrimonial() : "null") +
+                ", funcionario: " + (idFuncionario != null ? idFuncionario.getNomeFuncionario() : "null");
+    }
+
 }

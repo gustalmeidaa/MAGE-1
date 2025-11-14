@@ -103,4 +103,12 @@ public class Administrador implements UserDetails {
         // Caso contrário, retorne true para indicar que a conta está habilitada
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "login: " + login +
+                ", senha: " + senha +
+                ", role: ROLE_ADMINISTRADOR";
+    }
+
 }

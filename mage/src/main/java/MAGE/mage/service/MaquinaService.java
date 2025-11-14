@@ -19,6 +19,9 @@ import java.util.Optional;
 public class MaquinaService {
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private MaquinaRepository maquinaRepository;
     @Autowired
     private FuncionarioRepository funcionarioRepository;
@@ -55,9 +58,11 @@ public class MaquinaService {
     }
 
     // CRUD
-    public Maquina cadastrarMaquina(Maquina maquina) {
+    public Maquina cadastrarMaquina(Maquina maquina, String loginUsuario) {
         validarValorPositivo(maquina.getValor());
-        return maquinaRepository.save(maquina);
+        Maquina savedMaquina = maquinaRepository.save(maquina);
+        logService.addLog("INSERT", "", savedMaquina.toString(), loginUsuario);
+        return savedMaquina;
     }
 
     public List<Maquina> listarMaquinas() {
@@ -68,14 +73,21 @@ public class MaquinaService {
         return maquinaRepository.findById(id);
     }
 
-    public Maquina atualizarMaquina(Maquina maquina) {
+    public Maquina atualizarMaquina(Maquina maquina, String loginUsuario) {
         validarValorPositivo(maquina.getValor());
-        return maquinaRepository.save(maquina);
+        String oldData = maquina.toString();
+        Maquina updatedMaquina = maquinaRepository.save(maquina);
+        logService.addLog("UPDATE", oldData, updatedMaquina.toString(), loginUsuario);
+        return updatedMaquina;
     }
 
-    public void excluirMaquina(Integer id) {
+    public void excluirMaquina(Integer id, String loginUsuario) {
+        Maquina maquina = maquinaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Máquina não encontrada com o id " + id));
         maquinaRepository.deleteById(id);
+        logService.addLog("DELETE", maquina.toString(), "", loginUsuario);
     }
+
 
     public long contarMaquinasAtivas() {
         return maquinaRepository.countAtivas();

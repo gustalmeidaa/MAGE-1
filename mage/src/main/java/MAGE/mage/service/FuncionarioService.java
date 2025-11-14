@@ -22,6 +22,7 @@ public class FuncionarioService {
     @Lazy
     private FuncionarioRepository funcionarioRepository;
 
+
     @Autowired
     private SetorRepository setorRepository;
 //    public FuncionarioService(FuncionarioRepository funcionarioRepository, SetorRepository setorRepository) {
@@ -29,7 +30,10 @@ public class FuncionarioService {
 //        this.setorRepository = setorRepository;
 //    }
 
-    public Funcionario createFuncionario(FuncionarioDTO funcionarioDTO) {
+    @Autowired
+    private LogService logService;
+
+    public Funcionario createFuncionario(FuncionarioDTO funcionarioDTO, String loginUsuario) {
         Funcionario funcionario = new Funcionario();
         funcionario.setNomeFuncionario(funcionarioDTO.nomeFuncionario());
 
@@ -42,7 +46,9 @@ public class FuncionarioService {
                 throw new RuntimeException("Setor não encontrado com o nome " + funcionarioDTO.nomeSetor());
             }
         }
-        return funcionarioRepository.save(funcionario);
+        Funcionario savedFuncionario = funcionarioRepository.save(funcionario);
+        logService.addLog("INSERT", "", savedFuncionario.toString(), loginUsuario);
+        return savedFuncionario;
     }
 
     public List<Funcionario> getAllFuncionarios() {
@@ -53,29 +59,32 @@ public class FuncionarioService {
         return funcionarioRepository.findById(id);
     }
 
-    public Funcionario updateFuncionario(Integer id, FuncionarioDTO funcionarioDTO) {
+    public Funcionario updateFuncionario(Integer id, FuncionarioDTO funcionarioDTO, String loginUsuario) {
         Funcionario funcionario = funcionarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com o id " + id));
 
+        String oldData = funcionario.toString();
         funcionario.setNomeFuncionario(funcionarioDTO.nomeFuncionario());
 
         // Atualizando o setor, se fornecido
         if (funcionarioDTO.nomeSetor() != null) {
             Optional<Setor> setor = setorRepository.findByNomeSetor(funcionarioDTO.nomeSetor());
-            if (setor.isPresent()) {
-                funcionario.setSetor(setor.get());
-            } else {
-                throw new RuntimeException("Setor não encontrado com o nome " + funcionarioDTO.nomeSetor());
-            }
+            setor.ifPresentOrElse(funcionario::setSetor,
+                    () -> { throw new RuntimeException("Setor não encontrado com o nome " + funcionarioDTO.nomeSetor()); });
         }
 
-        return funcionarioRepository.save(funcionario);
+        Funcionario savedFuncionario = funcionarioRepository.save(funcionario);
+        logService.addLog("UPDATE", oldData, savedFuncionario.toString(), loginUsuario);
+        return savedFuncionario;
     }
 
-    public void deleteFuncionario(Integer id) {
-        if (!funcionarioRepository.existsById(id)) {
-            throw new RuntimeException("Funcionário não encontrado com o id " + id);
-        }
+    public void deleteFuncionario(Integer id, String loginUsuario) {
+        Funcionario funcionario = funcionarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com o id " + id));
+        System.out.println("\n O funcionário foi pesquisado: "+ funcionario.toString());
         funcionarioRepository.deleteById(id);
+        System.out.println("\n Foi deletado e virá o log \n");
+        logService.addLog("DELETE", funcionario.toString(), "", loginUsuario);
     }
+
 }

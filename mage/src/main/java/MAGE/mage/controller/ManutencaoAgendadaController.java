@@ -4,7 +4,9 @@ import MAGE.mage.dto.ManutencaoAgendadaDTO;
 import MAGE.mage.model.ManutencaoAgendada;
 import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.MaquinaRepository;
+import MAGE.mage.security.TokenService;
 import MAGE.mage.service.ManutencaoAgendadaService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/manutencoes-agendadas")
 public class ManutencaoAgendadaController {
+
+    @Autowired
+    private TokenService tokenService;
 
     @Autowired
     private ManutencaoAgendadaService service;
@@ -34,37 +39,45 @@ public class ManutencaoAgendadaController {
     }
 
     @PostMapping
-    public ResponseEntity<ManutencaoAgendada> create(@RequestBody ManutencaoAgendadaDTO manutencaoAgendadaDTO) {
+    public ResponseEntity<ManutencaoAgendada> create(@RequestBody ManutencaoAgendadaDTO manutencaoAgendadaDTO, HttpServletRequest request) {
+        String loginUsuario = tokenService.getCurrentUserLogin(request);
         ManutencaoAgendada manutencaoAgendada = new ManutencaoAgendada();
         manutencaoAgendada.setDataAgendada(manutencaoAgendadaDTO.dataAgendada());
         manutencaoAgendada.setTipoManutencao(manutencaoAgendadaDTO.tipoManutencao());
         manutencaoAgendada.setProcedimentos(manutencaoAgendadaDTO.procedimentos());
-        if (manutencaoAgendadaDTO.idMaquina() != null){
+
+        if (manutencaoAgendadaDTO.idMaquina() != null) {
             Optional<Maquina> maquinaOptional = maquinaRepository.findById(manutencaoAgendadaDTO.idMaquina());
-            if(maquinaOptional.isEmpty()){
+            if (maquinaOptional.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
             manutencaoAgendada.setMaquina(maquinaOptional.get());
         }
-        ManutencaoAgendada manutencaoSalva = service.save(manutencaoAgendada);
+
+        ManutencaoAgendada manutencaoSalva = service.save(manutencaoAgendada, loginUsuario); // Passar loginUsuario aqui
         return ResponseEntity.ok(manutencaoSalva);
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<ManutencaoAgendada> update(@PathVariable Integer id, @RequestBody ManutencaoAgendada manutencaoAgendada) {
+    public ResponseEntity<ManutencaoAgendada> update(@PathVariable Integer id, @RequestBody ManutencaoAgendada manutencaoAgendada, HttpServletRequest request) {
+        String loginUsuario = tokenService.getCurrentUserLogin(request);
         if (!service.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
         manutencaoAgendada.setIdManutencaoAgendada(id);
-        return ResponseEntity.ok(service.save(manutencaoAgendada));
+        return ResponseEntity.ok(service.save(manutencaoAgendada, loginUsuario)); // Passar loginUsuario aqui
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id, HttpServletRequest request) {
+        String loginUsuario = tokenService.getCurrentUserLogin(request);
         if (!service.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        service.deleteById(id);
+        service.deleteById(id, loginUsuario); // Passar loginUsuario para garantir que o log seja registrado
         return ResponseEntity.noContent().build();
     }
+
 }

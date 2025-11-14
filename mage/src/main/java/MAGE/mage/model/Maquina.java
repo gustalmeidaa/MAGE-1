@@ -95,4 +95,17 @@ public class Maquina {
     public void setStatus(StatusMaquina status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "id_maquina: " + idMaquina +
+                ", cod_patrimonial: " + codPatrimonial +
+                ", num_serie: " + numSerie +
+                ", valor: " + valor +
+                ", localizacao: " + (localizacao != null ? localizacao : "null") +
+                ", descricao: " + (descricao != null ? descricao : "null") +
+                ", status: " + status +
+                ", responsavel: " + (responsavel != null ? responsavel.getNomeFuncionario() : "null");
+    }
+
 }

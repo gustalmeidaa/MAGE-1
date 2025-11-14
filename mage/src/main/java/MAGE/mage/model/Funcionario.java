@@ -60,4 +60,13 @@ public class Funcionario {
     public void setMaquinas(List<Maquina> maquinas) {
         this.maquinas = maquinas;
     }
+
+    @Override
+    public String toString() {
+        return "id_funcionario: " + idFuncionario +
+                ", nome_funcionario: " + nomeFuncionario +
+                ", setor: " + (setor != null ? setor.getNomeSetor() : "null") +
+                ", maquinas: " + (maquinas != null ? maquinas.size() : 0);
+    }
+
 }

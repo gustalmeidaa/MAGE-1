@@ -13,8 +13,6 @@ public class Setor {
     @Column(name = "nome_setor", length = 45, nullable = false, unique = true)
     private String nomeSetor;
 
-    // getters e setters
-
     public Integer getIdSetor() {
         return idSetor;
     }
@@ -29,5 +27,10 @@ public class Setor {
 
     public void setNomeSetor(String nomeSetor) {
         this.nomeSetor = nomeSetor;
+    }
+
+    @Override
+    public String toString() {
+        return "id_setor: " + idSetor + ", nome_setor: " + nomeSetor;
     }
 }
