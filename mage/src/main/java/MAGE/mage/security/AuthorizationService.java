@@ -44,12 +44,4 @@ public class AuthorizationService implements UserDetailsService {
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
-//    public ResponseEntity<Object> register (@RequestBody RegisterDto registerDto){
-//        if (this.administradorRepository.findByLogin(registerDto.login()) != null) return ResponseEntity.badRequest().build();
-//        String encryptedPassword = new BCryptPasswordEncoder().encode(registerDto.senha());
-//
-//        Administrador administrador = new Administrador(registerDto.login(), encryptedPassword);
-//        this.administradorRepository.save(administrador);
-//        return ResponseEntity.ok().build();
-//    }
 }

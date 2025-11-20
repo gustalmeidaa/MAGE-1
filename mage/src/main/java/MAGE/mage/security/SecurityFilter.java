@@ -39,15 +39,4 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-//    public String recoverToken(HttpServletRequest request){
-//        var authHeader = request.getHeader("Authorization");
-//        if (authHeader == null) return null;
-//        return authHeader.replace("Bearer ", "");
-//    }
-//
-//    // Metodo para extrair o login do usuário do token JWT
-//    public String getCurrentUserLogin(HttpServletRequest request) {
-//        String token = recoverToken(request);
-//        return tokenService.validateToken(token);
-//    }
 }
