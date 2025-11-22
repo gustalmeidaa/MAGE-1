@@ -63,7 +63,7 @@ public class Administrador implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"));
+        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class Administrador implements UserDetails {
     public String toString() {
         return "login: " + login +
                 ", senha: " + senha +
-                ", role: ROLE_ADMINISTRADOR";
+                ", role: ROLE_ADMIN";
     }
 
 }
