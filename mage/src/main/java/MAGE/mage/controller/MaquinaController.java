@@ -68,6 +68,7 @@ public class MaquinaController {
         }
 
         Maquina maquina = maquinaService.dtoParaMaquina(maquinaDTO);
+        maquina.setIdMaquina(id);
         Maquina maquinaAtualizada = maquinaService.atualizarMaquina(maquina, loginUsuario);
         MaquinaDTO maquinaAtualizadaDTO = maquinaService.maquinaParaDTO(maquinaAtualizada);
         return ResponseEntity.ok(maquinaAtualizadaDTO);

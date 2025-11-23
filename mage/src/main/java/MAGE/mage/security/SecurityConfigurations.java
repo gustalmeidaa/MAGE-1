@@ -38,18 +38,19 @@ public class SecurityConfigurations {
                     if (corsConfigurationSource != null) {
                         cors.configurationSource(corsConfigurationSource);
                     } else {
-                        // Se o CorsConfigurationSource não for injetado, você pode usar um default
-                        // ou deixar para o Spring Security tentar encontrar a configuração padrão.
-                        cors.disable(); // Desativa o cors aqui se não puder configurar, mas isso não resolverá o problema.
+                        cors.disable();
                     }
                 })
-                // Se você não tiver o bean injetado, uma solução simples é:
-                // .cors(Customizer.withDefaults())
 
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/maquinas/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/maquinas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/maquinas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/administradores").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/administradores").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

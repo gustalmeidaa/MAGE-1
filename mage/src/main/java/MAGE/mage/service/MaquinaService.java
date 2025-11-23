@@ -34,6 +34,7 @@ public class MaquinaService {
         }
         return new MaquinaDTO(
                 maquina.getCodPatrimonial(),
+                maquina.getIdMaquina(),
                 maquina.getNumSerie(),
                 maquina.getValor(),
                 idResponsavel,

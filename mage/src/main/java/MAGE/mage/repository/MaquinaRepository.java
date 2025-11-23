@@ -17,7 +17,7 @@ public interface MaquinaRepository extends JpaRepository<Maquina, Integer> {
     @Query("SELECT COUNT(m) FROM Maquina m WHERE m.status = 'Inativa'")
     long countInativas();
 
-    @Query("SELECT COUNT(m) FROM Maquina m WHERE m.status = 'Em manutenção'")
+    @Query("SELECT COUNT(m) FROM Maquina m WHERE m.status = 'Em_manutencao'")
     long countEmManutencao();
 
     List<Maquina> findByCodPatrimonial(String codPatrimonial);
