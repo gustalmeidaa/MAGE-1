@@ -1,5 +1,6 @@
 package MAGE.mage.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record ManutencaoDTO(
@@ -7,6 +8,7 @@ public record ManutencaoDTO(
         String tipoManutencao,
         String procedimentos,
         Integer idMaquina,
-        Integer idFuncionario
+        Integer idFuncionario,
+        BigDecimal custoManutencao
 ) {
 }

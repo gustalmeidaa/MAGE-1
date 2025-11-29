@@ -1,7 +1,7 @@
 package MAGE.mage.model;
 
 import jakarta.persistence.*;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,6 +20,9 @@ public class ManutencaoAgendada {
 
     @Column(name = "procedimentos", length = 255, nullable = false)
     private String procedimentos;
+
+    @Column(name = "custo_manutencao", precision = 10, scale = 2)
+    private BigDecimal custoManutencao;  // Novo campo para custo
 
     @ManyToOne
     @JoinColumn(name = "id_maquina")
@@ -59,6 +62,14 @@ public class ManutencaoAgendada {
         this.procedimentos = procedimentos;
     }
 
+    public BigDecimal getCustoManutencao() {
+        return custoManutencao;
+    }
+
+    public void setCustoManutencao(BigDecimal custoManutencao) {
+        this.custoManutencao = custoManutencao;
+    }
+
     public Maquina getMaquina() {
         return maquina;
     }
@@ -73,7 +84,7 @@ public class ManutencaoAgendada {
                 ", data_agendada: " + dataAgendada +
                 ", tipo_de_manutencao: " + tipoManutencao +
                 ", procedimentos: " + procedimentos +
+                ", custo_manutencao: " + custoManutencao +
                 ", maquina: " + (maquina != null ? maquina.getCodPatrimonial() : "null");
     }
-
 }

@@ -26,11 +26,9 @@ public class ManutencaoAgendadaService {
     }
 
     public ManutencaoAgendada save(ManutencaoAgendada manutencaoAgendada, String loginUsuario) {
+        validarCusto(manutencaoAgendada);
         ManutencaoAgendada savedManutencaoAgendada = repository.save(manutencaoAgendada);
-
-        // Log de inserção
         logService.addLog("INSERT", "", savedManutencaoAgendada.toString(), loginUsuario);
-
         return savedManutencaoAgendada;
     }
 
@@ -42,5 +40,11 @@ public class ManutencaoAgendadaService {
 
         // Log de deleção
         logService.addLog("DELETE", oldData, "", loginUsuario);
+    }
+
+    private void validarCusto(ManutencaoAgendada manutencaoAgendada) {
+        if (manutencaoAgendada.getCustoManutencao() == null || manutencaoAgendada.getCustoManutencao().signum() < 0) {
+            throw new IllegalArgumentException("O custo de manutenção deve ser um valor positivo.");
+        }
     }
 }

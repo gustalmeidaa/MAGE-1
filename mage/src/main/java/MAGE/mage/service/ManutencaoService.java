@@ -1,13 +1,11 @@
 package MAGE.mage.service;
 
 import MAGE.mage.model.Manutencao;
-import MAGE.mage.model.Maquina;
 import MAGE.mage.repository.ManutencaoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,14 +27,16 @@ public class ManutencaoService {
     }
 
     public Manutencao save(Manutencao manutencao, String loginUsuario) {
+        validarCusto(manutencao);
         Manutencao savedManutencao = manutencaoRepository.save(manutencao);
-        logService.addLog("INSERT", "", savedManutencao.toString(), loginUsuario); // Registro de INSERT
+        logService.addLog("INSERT", "", savedManutencao.toString(), loginUsuario);
         return savedManutencao;
     }
 
     public Manutencao update(Manutencao manutencao, String loginUsuario) {
+        validarCusto(manutencao);
         Manutencao updatedManutencao = manutencaoRepository.save(manutencao);
-        logService.addLog("UPDATE", manutencao.toString(), updatedManutencao.toString(), loginUsuario); // Registro de UPDATE
+        logService.addLog("UPDATE", manutencao.toString(), updatedManutencao.toString(), loginUsuario);
         return updatedManutencao;
     }
 
@@ -45,5 +45,11 @@ public class ManutencaoService {
                 .orElseThrow(() -> new EntityNotFoundException("Manutenção não encontrada com ID " + id));
         manutencaoRepository.deleteById(id);
         logService.addLog("DELETE", manutencao.toString(), "", loginUsuario); // Registro de DELETE
+    }
+
+    private void validarCusto(Manutencao manutencao) {
+        if (manutencao.getCustoManutencao() == null || manutencao.getCustoManutencao().signum() < 0) {
+            throw new IllegalArgumentException("O custo de manutenção deve ser um valor positivo.");
+        }
     }
 }

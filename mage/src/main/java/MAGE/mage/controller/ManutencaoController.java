@@ -1,7 +1,6 @@
 package MAGE.mage.controller;
 
 import MAGE.mage.dto.ManutencaoDTO;
-import MAGE.mage.dto.MaquinaDTO;
 import MAGE.mage.model.Funcionario;
 import MAGE.mage.model.Manutencao;
 import MAGE.mage.model.Maquina;
@@ -26,31 +25,34 @@ public class ManutencaoController {
 
     @Autowired
     private ManutencaoService manutencaoService;
+
     @Autowired
     private MaquinaRepository maquinaRepository;
+
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
-    public Manutencao dtoParaManutencao(ManutencaoDTO manutencaoDTO){
+    public Manutencao dtoParaManutencao(ManutencaoDTO manutencaoDTO) {
         Manutencao manutencao = new Manutencao();
         manutencao.setData(manutencaoDTO.data());
         manutencao.setTipoManutencao(manutencaoDTO.tipoManutencao());
         manutencao.setProcedimentos(manutencaoDTO.procedimentos());
 
+        // Mapeando o custo da manutenção
+        manutencao.setCustoManutencao(manutencaoDTO.custoManutencao());
+
         if (manutencaoDTO.idMaquina() != null) {
             Optional<Maquina> maquinaOptional = maquinaRepository.findById(manutencaoDTO.idMaquina());
-//            if (maquinaOptional.isEmpty()) {
-//                return ResponseEntity.badRequest().build();
-//            }
-            manutencao.setIdMaquina(maquinaOptional.get());
+            if (maquinaOptional.isPresent()) {
+                manutencao.setIdMaquina(maquinaOptional.get());
+            }
         }
 
         if (manutencaoDTO.idFuncionario() != null) {
             Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(manutencaoDTO.idFuncionario());
-//            if (funcionarioOptional.isEmpty()) {
-//                return ResponseEntity.badRequest().build();
-//            }
-            manutencao.setIdFuncionario(funcionarioOptional.get());
+            if (funcionarioOptional.isPresent()) {
+                manutencao.setIdFuncionario(funcionarioOptional.get());
+            }
         }
         return manutencao;
     }
@@ -85,12 +87,9 @@ public class ManutencaoController {
             return ResponseEntity.notFound().build();
         }
 
-
         Manutencao manutencao = this.dtoParaManutencao(manutencaoDTO);
+        manutencao.setIdHistoricoManutencoes(id); // Definindo a ID para atualização
 
-        // Enviar erro caso id de máquina fornecido seja nulo
-
-        manutencao.setIdHistoricoManutencoes(id);
         Manutencao updatedManutencao = manutencaoService.update(manutencao, loginUsuario);
         return ResponseEntity.ok(updatedManutencao);
     }
@@ -105,3 +104,4 @@ public class ManutencaoController {
         return ResponseEntity.noContent().build();
     }
 }
+

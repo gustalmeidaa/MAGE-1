@@ -1,7 +1,7 @@
 package MAGE.mage.model;
 
 import jakarta.persistence.*;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,18 +11,28 @@ public class Manutencao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_historico_de_manutencoes")
     private Integer idHistoricoManutencoes;
+
     @Column(name = "data")
     private LocalDateTime data;
+
     @Column(name = "tipo_de_manutencao", length = 45)
     private String tipoManutencao;
+
     @Column(name = "procedimentos_realizados", length = 45)
     private String procedimentos;
+
+    @Column(name = "custo_manutencao", precision = 10, scale = 2)
+    private BigDecimal custoManutencao;  // Novo campo para custo
+
     @ManyToOne
     @JoinColumn(name = "id_maquina")
     private Maquina idMaquina;
+
     @ManyToOne
     @JoinColumn(name = "id_funcionario")
     private Funcionario idFuncionario;
+
+    // Getters e Setters
 
     public Integer getIdHistoricoManutencoes() {
         return idHistoricoManutencoes;
@@ -56,6 +66,14 @@ public class Manutencao {
         this.procedimentos = procedimentos;
     }
 
+    public BigDecimal getCustoManutencao() {
+        return custoManutencao;
+    }
+
+    public void setCustoManutencao(BigDecimal custoManutencao) {
+        this.custoManutencao = custoManutencao;
+    }
+
     public Maquina getIdMaquina() {
         return idMaquina;
     }
@@ -78,8 +96,8 @@ public class Manutencao {
                 ", data: " + data +
                 ", tipo_de_manutencao: " + tipoManutencao +
                 ", procedimentos_realizados: " + procedimentos +
+                ", custo_manutencao: " + custoManutencao +
                 ", maquina: " + (idMaquina != null ? idMaquina.getCodPatrimonial() : "null") +
                 ", funcionario: " + (idFuncionario != null ? idFuncionario.getNomeFuncionario() : "null");
     }
-
 }
