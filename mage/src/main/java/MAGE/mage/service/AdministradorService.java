@@ -47,9 +47,9 @@ public class AdministradorService {
         Administrador administrador = new Administrador(administradorDto.login(), encryptedPassword);
         Administrador savedAdministrador = this.administradorRepository.save(administrador);
         logService.addLog("INSERT", "", savedAdministrador.toString(), loginUsuario);
-        if(administradorRepository.findByLogin("admin0") != null){
-            this.delete("admin0", loginUsuario);
-        }
+//        if(administradorRepository.findByLogin("admin0") != null){
+//            this.delete("admin0", loginUsuario);
+//        }
         return savedAdministrador;
     }
 
