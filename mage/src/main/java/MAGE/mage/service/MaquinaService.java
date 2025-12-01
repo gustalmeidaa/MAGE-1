@@ -50,6 +50,7 @@ public class MaquinaService {
         maquina.setValor(maquinaDTO.valor());
         maquina.setLocalizacao(maquinaDTO.localizacao());
         maquina.setStatus(maquinaDTO.status());
+        maquina.setDescricao(maquinaDTO.descricao());
 
         if(maquinaDTO.idResponsavel() != null){
             Optional<Funcionario> responsavel = funcionarioRepository.findById(maquinaDTO.idResponsavel());
